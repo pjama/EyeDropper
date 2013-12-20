@@ -1,0 +1,11 @@
+bin/
+gen
+*/R.java
+*/.classpath
+*/lint.xml
+*/dist
+tmp/
+.project
+project.properties
+*.sw*
+*/proguard

@@ -52,34 +52,19 @@ public class FullscreenActivity extends Activity {
 	    mAttacher.cleanup();
 	}
 	
-	private void updateColorReadout(int color, Boolean websafe) {
+	private void updateColorReadout(Color color, Boolean websafe) {
 		if (websafe) {
-			color = getWebSafeColor(color);
+			color = color.getWebSafeColor();
 		}
-		int r = (color >> 16) & 0xFF;
-		int g = (color >>  8) & 0xFF;
-		int b = (color >>  0) & 0xFF;
-		this.mReadoutRed.setText(String.format("R: %d", r));
-		this.mReadoutGreen.setText(String.format("G: %d", g));
-		this.mReadoutBlue.setText(String.format("B: %d", b));
-		String hex = String.format("0x%06X", color  & 0xFFFFFF);
-		this.mReadoutHex.setText(hex);
-		this.mColorSwatch.setBackgroundColor(color);
+		this.mReadoutRed.setText(String.format("R: %d", color.getR()));
+		this.mReadoutGreen.setText(String.format("G: %d", color.getG()));
+		this.mReadoutBlue.setText(String.format("B: %d", color.getB()));
+		
+		this.mReadoutHex.setText(color.getHex());
+		this.mColorSwatch.setBackgroundColor(color.getARGB());
 		
 		this.mRAL = new ColorRAL();
-		mRAL.getClosestColor(r, g, b);
-	}
-	
-	private int getWebSafeColor(int color) {
-		int r = (color >> 16) & 0xFF;
-		int g = (color >>  8) & 0xFF;
-		int b = (color >>  0) & 0xFF;
-		
-		int rw = 51 * ((r+25)/51);
-		int gw = 51 * ((g+25)/51);
-		int bw = 51 * ((b+25)/51);
-		
-		return (0xFF<<24) + ((rw & 0xFF)<<16) + ((gw & 0xFF)<<8) + ((bw & 0xFF)<<0); 
+		mRAL.getClosestColor(color.getR(), color.getG(), color.getB());
 	}
 	
 	private class PhotoTapListener implements OnPhotoTapListener {
@@ -87,13 +72,13 @@ public class FullscreenActivity extends Activity {
         @Override
         public void onPhotoTap(View view, float x, float y) {
             ImageView im = ((ImageView)view);
-            
 			BitmapDrawable drawable = ((BitmapDrawable)im.getDrawable());
 			Bitmap bitmap = drawable.getBitmap();
 			int posX = (int)(bitmap.getWidth() * x);
 			int posY = (int)(bitmap.getHeight() * y);
 			int pixelColor = bitmap.getPixel(posX, posY);
-        	updateColorReadout(pixelColor, true);
+			Color color = new Color(pixelColor);
+        	updateColorReadout(color, true);
         }
     };
 }

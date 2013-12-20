@@ -2,12 +2,11 @@
 <resources>
 
     <string name="app_name">EyeDropper</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
 	<string name="image_main_description">Main image container</string>
 	<string name="color_sample_desc">Color swatch display</string>
 	<string name="readout_red">R:</string>
 	<string name="readout_green">G:</string>
 	<string name="readout_blue">B:</string>
+	<string name="readout_hex">#:</string>
 	
 </resources>

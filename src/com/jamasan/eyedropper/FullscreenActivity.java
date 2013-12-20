@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ public class FullscreenActivity extends Activity {
 	private TextView mReadoutRed;
 	private TextView mReadoutGreen;
 	private TextView mReadoutBlue;
+	private TextView mReadoutHex;
 	private ImageView mColorSwatch;
 	
 	@Override
@@ -41,19 +43,37 @@ public class FullscreenActivity extends Activity {
 		this.mReadoutRed = (TextView)findViewById(id.text_red_readout);
 		this.mReadoutGreen = (TextView)findViewById(id.text_green_readout);
 		this.mReadoutBlue = (TextView)findViewById(id.text_blue_readout);
+		this.mReadoutHex = (TextView)findViewById(id.text_hex_readout);
 		this.mColorSwatch = (ImageView)findViewById(id.color_sample);
 	}
 
-	private void updateColorReadout(int color) {
+	private void updateColorReadout(int color, Boolean websafe) {
+		if (websafe) {
+			color = getWebSafeColor(color);
+		}
+		
 		int r = (color >> 16) & 0xFF;
 		int g = (color >>  8) & 0xFF;
 		int b = (color >>  0) & 0xFF;
 		this.mReadoutRed.setText(String.format("R: %d", r));
 		this.mReadoutGreen.setText(String.format("G: %d", g));
 		this.mReadoutBlue.setText(String.format("B: %d", b));
+		String hex = String.format("0x%06X", color  & 0xFFFFFF);
+		this.mReadoutHex.setText(hex);
 		this.mColorSwatch.setBackgroundColor(color);
 	}
 	
+	private int getWebSafeColor(int color) {
+		int r = (color >> 16) & 0xFF;
+		int g = (color >>  8) & 0xFF;
+		int b = (color >>  0) & 0xFF;
+		
+		int rw = 51 * ((r+25)/51);
+		int gw = 51 * ((g+25)/51);
+		int bw = 51 * ((b+25)/51);
+		
+		return (0xFF<<24) + ((rw & 0xFF)<<16) + ((gw & 0xFF)<<8) + ((bw & 0xFF)<<0); 
+	}
 	View.OnTouchListener onTouchImage = new View.OnTouchListener() {
 		
 		@Override
@@ -73,13 +93,11 @@ public class FullscreenActivity extends Activity {
 				int[] viewCoords = new int[2];
 				v.getLocationOnScreen(viewCoords);;
 				
-				float viewX = screenX - viewCoords[0];
-	            float viewY = screenY - viewCoords[1];
-	            
 	            try {
 	            	int pixelColor = bitmap.getPixel((int)screenX, (int)screenY);
-	            	updateColorReadout(pixelColor);
+	            	updateColorReadout(pixelColor, true);
 	            } catch (Exception e) {
+	            	Log.e("UpdateColor", e.getMessage());
 	            	return false;
 	            }
 				

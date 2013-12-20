@@ -15,6 +15,7 @@ import com.jamasan.eyedropper.R.id;
 public class FullscreenActivity extends Activity {
 	
 	private PhotoViewAttacher mAttacher;
+	private ColorRAL mRAL;
 	
 	private TextView mReadoutRed;
 	private TextView mReadoutGreen;
@@ -64,6 +65,9 @@ public class FullscreenActivity extends Activity {
 		String hex = String.format("0x%06X", color  & 0xFFFFFF);
 		this.mReadoutHex.setText(hex);
 		this.mColorSwatch.setBackgroundColor(color);
+		
+		this.mRAL = new ColorRAL();
+		mRAL.getClosestColor(r, g, b);
 	}
 	
 	private int getWebSafeColor(int color) {

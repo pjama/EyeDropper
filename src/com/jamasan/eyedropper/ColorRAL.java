@@ -16,7 +16,7 @@ public class ColorRAL {
 		ralColors.put("6032", new ColorPoint(36, 113, 70, "Signl Green"));
 	}
 	
-	public String getClosestColor(int r, int g, int b) {
+	public ColorPoint getClosestColor(int r, int g, int b) {
 		ColorPoint refPoint = new ColorPoint(r, g, b, null);
 		ColorPoint closestPoint = null;
 		double closestDistance = Double.MAX_VALUE;
@@ -29,6 +29,6 @@ public class ColorRAL {
 			}
 		}
 		if (closestPoint == null) return null;
-		return closestPoint.getName();
+		return closestPoint;
 	}
 }

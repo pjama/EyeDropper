@@ -21,7 +21,6 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jamasan.eyedropper.R.id;
@@ -32,20 +31,15 @@ public class FullscreenActivity extends Activity {
 	static final int REQUEST_IMAGE_LOAD = 1002;
 	
 	private PhotoViewAttacher mAttacher;
-	private ColorRAL mRAL;
 	
 	private LinearLayout mMenuLayout;
 	private ImageView mMenuCamera;
 	private ImageView mMenuGallery;
 	private ImageView mMenuSpectrum;
 	
+	private HUD mHUD;
 	private FrameLayout mMainLayout;
-	private TextView mReadoutRed;
-	private TextView mReadoutGreen;
-	private TextView mReadoutBlue;
-	private TextView mReadoutHex;
 	private ImageView mImageMain;
-	private ImageView mColorSwatch;
 	
 	private Uri mImageUri;
 	
@@ -75,20 +69,7 @@ public class FullscreenActivity extends Activity {
 		mAttacher = new PhotoViewAttacher(mImageMain);
 		mAttacher.setOnPhotoTapListener(new PhotoTapListener());
 		
-		this.mReadoutRed = (TextView)findViewById(R.id.text_red_readout);
-		this.mReadoutGreen = (TextView)findViewById(R.id.text_green_readout);
-		this.mReadoutBlue = (TextView)findViewById(R.id.text_blue_readout);
-		this.mReadoutHex = (TextView)findViewById(R.id.text_hex_readout);
-		this.mColorSwatch = (ImageView)findViewById(R.id.color_sample);
-	}
-	
-	private void releaseMainLayout() {
-		this.mMainLayout = null;
-		this.mReadoutRed = null;
-		this.mReadoutGreen = null;
-		this.mReadoutBlue = null;
-		this.mReadoutHex = null;
-		this.mColorSwatch = null;
+		
 	}
 	
 	private void setMainLayoutVisibility(Boolean visible) {
@@ -108,12 +89,6 @@ public class FullscreenActivity extends Activity {
 		this.mMenuCamera.setOnClickListener(handler);
 		this.mMenuGallery.setOnClickListener(handler);
 		this.mMenuSpectrum.setOnClickListener(handler);
-	}
-	
-	private void releaseMenu() {
-		this.mMenuCamera = null;
-		this.mMenuGallery = null;
-		this.mMenuSpectrum = null;
 	}
 	
 	private void setMenuVisibility(Boolean visible) {
@@ -155,42 +130,22 @@ public class FullscreenActivity extends Activity {
 		this.setMainLayoutVisibility(true);
 	}
 	
-	private void updateColorReadout(ColorPoint color, Boolean websafe) {
-		if (websafe) {
-			color = color.getWebSafeColor();
-		}
-		this.mReadoutRed.setText(String.format("R: %d", color.getR()));
-		this.mReadoutGreen.setText(String.format("G: %d", color.getG()));
-		this.mReadoutBlue.setText(String.format("B: %d", color.getB()));
-		
-		this.mReadoutHex.setText(color.getHex());
-		this.mColorSwatch.setBackgroundColor(color.getARGB());
-		//this.mRAL = new ColorRAL();
-		//mRAL.getClosestColor(color.getR(), color.getG(), color.getB());
+	private void updateColorReadout(ColorPoint color) {
+		mHUD.setBaseColor(color);
 	}
 
     private void dispatchTakePictureIntent() {
-        //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        //if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-        //    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        //}
     	Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 	    File photo;
-	    try
-	    {
-	        // place where to store camera taken picture
+	    try {
 	        photo = this.createTemporaryFile("picture", ".jpg");
 	        photo.delete();
-	    }
-	    catch(Exception e)
-	    {
-	        Log.v("CaptureImage", "Can't create file to take picture!");
-	        Toast.makeText(this, "Please check SD card! Image shot is impossible!", 10000);
+	    } catch(Exception e) {
+	        Log.e("CaptureImage", "Can't create file to take picture!");
 	        return;
 	    }
 	    mImageUri = Uri.fromFile(photo);
 	    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-	    //start camera intent
 	    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
     
@@ -220,9 +175,6 @@ public class FullscreenActivity extends Activity {
             return;
         case REQUEST_IMAGE_CAPTURE:
         	if(resultCode == RESULT_OK) {
-                //Bundle extras = data.getExtras();
-                //Bitmap bitmap = (Bitmap) extras.get("data");
-        		
                 showSpectrumSelection();
                 this.grabImage(mImageMain);
                 mAttacher.update();
@@ -265,7 +217,7 @@ public class FullscreenActivity extends Activity {
 			int posY = (int)(bitmap.getHeight() * y);
 			int pixelColor = bitmap.getPixel(posX, posY);
 			ColorPoint color = new ColorPoint(pixelColor);
-        	updateColorReadout(color, false);
+        	updateColorReadout(color);
         }
     };
 }

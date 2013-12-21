@@ -62,6 +62,10 @@ public class ColorPoint {
 		return this.mName;
 	}
 	
+	public String getCode() {
+		return this.mCode;
+	}
+	
 	public double getDistance(ColorPoint p) {
 		double dr2 = Math.pow(this.r - p.r, 2);
 		double dg2 = Math.pow(this.g - p.g, 2);

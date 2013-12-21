@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
         
         <ImageView 
             android:id="@+id/menu_gallery"
@@ -47,7 +46,8 @@
         android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="top|center_horizontal"
-		android:orientation="vertical">
+		android:orientation="vertical"
+        android:visibility="gone">
     
             <ImageView 
 		        android:id="@+id/image_main"
@@ -84,12 +84,14 @@
 		                android:id="@+id/share_color"
 		                android:layout_width="40dip"
 		                android:layout_height="40dip"
+		                android:scaleType="fitXY"
 		                android:src="@drawable/ic_action_share" />
 		            
 		            <ImageButton
 		                android:id="@+id/bookmark_color"
 		                android:layout_width="40dip"
 		                android:layout_height="40dip"
+		                android:scaleType="fitXY"
 		                android:src="@drawable/ic_action_share"/>
 		            
 		        </LinearLayout>

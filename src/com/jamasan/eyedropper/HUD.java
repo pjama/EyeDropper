@@ -17,11 +17,12 @@ public class HUD {
 	private ColorRAL mRAL;
 	
 	public HUD(Activity activity) {
+		mActivity = activity;
+		mColors = new ArrayList<ColorPoint>();
 		this.mRAL = new ColorRAL();
 		mListRowItems = new ArrayList<CustomListItem>();
-		mCustomAdapter = new CustomAdapter(mActivity, R.layout.row_custom, mListRowItems);
 		mListColors = (ListView)activity.findViewById(R.id.list_colors);
-		mListColors.setAdapter(mCustomAdapter);
+		
 	}
 	
 	public void setBaseColor(ColorPoint color) {
@@ -32,8 +33,16 @@ public class HUD {
 		mColors.clear();
 		mListRowItems.clear();
 		
-		mRAL.getClosestColor(mBaseColor.getR(), mBaseColor.getG(), mBaseColor.getB());
-		CustomListItem listItem = new CustomListItem(mBaseColor);
-		mListRowItems.add(listItem);
+		
+		mListRowItems.add(new CustomListItem(mBaseColor));
+		
+		ColorPoint colorWebSafe = mBaseColor.getWebSafeColor();
+		mListRowItems.add(new CustomListItem(colorWebSafe));
+		
+		ColorPoint colorRAL = mRAL.getClosestColor(mBaseColor); 
+		mListRowItems.add(new CustomListItem(colorRAL));
+		
+		mCustomAdapter = new CustomAdapter(mActivity, R.layout.row_custom, mListRowItems);
+		mListColors.setAdapter(mCustomAdapter);
 	}
 }

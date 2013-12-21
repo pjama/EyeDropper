@@ -56,20 +56,12 @@ public class FullscreenActivity extends Activity {
 		this.allocateMenu();
 	}
 	
-	@Override
-	protected void onStop() {
-		//releaseMainLayout();
-		//releaseMenu();
-		super.onStop();
-	}
-	
 	private void allocateMainLayout() {
 		this.mMainLayout = (FrameLayout)findViewById(R.id.eyedropper_main);
 		mImageMain = (ImageView)findViewById(R.id.image_main);
 		mAttacher = new PhotoViewAttacher(mImageMain);
 		mAttacher.setOnPhotoTapListener(new PhotoTapListener());
-		
-		
+		mHUD = new HUD(this);
 	}
 	
 	private void setMainLayoutVisibility(Boolean visible) {
@@ -132,6 +124,7 @@ public class FullscreenActivity extends Activity {
 	
 	private void updateColorReadout(ColorPoint color) {
 		mHUD.setBaseColor(color);
+		mHUD.updateColors();
 	}
 
     private void dispatchTakePictureIntent() {

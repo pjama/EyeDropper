@@ -6,6 +6,7 @@ public class ColorPoint {
 	private int g;
 	private int b;
 	private String mName;
+	private String mDescription;
 	private String mCode;
 	
 	public ColorPoint(int r, int g, int b, String name) {
@@ -14,6 +15,7 @@ public class ColorPoint {
 		this.g = g;
 		this.b = b;
 		this.mName = name;
+		this.mDescription = "#" + this.getHex();
 	}
 	
 	public ColorPoint(int r, int g, int b) {
@@ -33,8 +35,9 @@ public class ColorPoint {
 	public ColorPoint getWebSafeColor() {
 		int rw = 51 * ((r+25)/51);
 		int gw = 51 * ((g+25)/51);
-		int bw = 51 * ((b+25)/51);	
-		return new ColorPoint(rw, gw, bw); 
+		int bw = 51 * ((b+25)/51);
+		ColorPoint colorWebSafe = new ColorPoint(rw, gw, bw, "Web-Safe RGB");
+		return colorWebSafe; 
 	}
 	
 	public int getARGB() {
@@ -58,12 +61,31 @@ public class ColorPoint {
 		return hex;
 	}
 	
+	public ColorPoint setName(String name) {
+		this.mName = name;
+		return this;
+	}
+	
 	public String getName() {
 		return this.mName;
 	}
 	
+	public ColorPoint setCode(String code) {
+		this.mCode = code;
+		return this;
+	}
+	
 	public String getCode() {
 		return this.mCode;
+	}
+	
+	public ColorPoint setDescription(String description) {
+		this.mDescription = description;
+		return this;
+	}
+	
+	public String getDescription() {
+		return this.mDescription;
 	}
 	
 	public double getDistance(ColorPoint p) {

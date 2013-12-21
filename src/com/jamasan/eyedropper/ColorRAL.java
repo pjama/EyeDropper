@@ -16,19 +16,21 @@ public class ColorRAL {
 		ralColors.put("6032", new ColorPoint(36, 113, 70, "Signl Green"));
 	}
 	
-	public ColorPoint getClosestColor(int r, int g, int b) {
-		ColorPoint refPoint = new ColorPoint(r, g, b, null);
+	public ColorPoint getClosestColor(ColorPoint color) {
 		ColorPoint closestPoint = null;
 		double closestDistance = Double.MAX_VALUE;
 		for(Map.Entry<String, ColorPoint> entry : this.ralColors.entrySet()) {
 			ColorPoint p = entry.getValue();
-			double distance = p.getDistance(refPoint);
+			double distance = p.getDistance(color);
 			if (distance < closestDistance) {
 				closestDistance = distance;
 				closestPoint = p;
+				closestPoint.setCode(entry.getKey());
+				closestPoint.setDescription(closestPoint.getName());
 			}
 		}
 		if (closestPoint == null) return null;
+		closestPoint.setName("RAL "+closestPoint.getCode());
 		return closestPoint;
 	}
 }

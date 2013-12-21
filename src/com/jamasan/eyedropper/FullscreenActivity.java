@@ -1,5 +1,7 @@
 package com.jamasan.eyedropper;
 
+import java.io.File;
+
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import android.app.Activity;
@@ -11,13 +13,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jamasan.eyedropper.R.id;
 
@@ -41,6 +46,8 @@ public class FullscreenActivity extends Activity {
 	private TextView mReadoutHex;
 	private ImageView mImageMain;
 	private ImageView mColorSwatch;
+	
+	private Uri mImageUri;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -158,16 +165,33 @@ public class FullscreenActivity extends Activity {
 		
 		this.mReadoutHex.setText(color.getHex());
 		this.mColorSwatch.setBackgroundColor(color.getARGB());
-		
-		this.mRAL = new ColorRAL();
-		mRAL.getClosestColor(color.getR(), color.getG(), color.getB());
+		//this.mRAL = new ColorRAL();
+		//mRAL.getClosestColor(color.getR(), color.getG(), color.getB());
 	}
 
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
+        //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+        //    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        //}
+    	Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+	    File photo;
+	    try
+	    {
+	        // place where to store camera taken picture
+	        photo = this.createTemporaryFile("picture", ".jpg");
+	        photo.delete();
+	    }
+	    catch(Exception e)
+	    {
+	        Log.v("CaptureImage", "Can't create file to take picture!");
+	        Toast.makeText(this, "Please check SD card! Image shot is impossible!", 10000);
+	        return;
+	    }
+	    mImageUri = Uri.fromFile(photo);
+	    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+	    //start camera intent
+	    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
     
     @Override
@@ -196,15 +220,40 @@ public class FullscreenActivity extends Activity {
             return;
         case REQUEST_IMAGE_CAPTURE:
         	if(resultCode == RESULT_OK) {
-                Bundle extras = data.getExtras();
-                Bitmap bitmap = (Bitmap) extras.get("data");
+                //Bundle extras = data.getExtras();
+                //Bitmap bitmap = (Bitmap) extras.get("data");
+        		
                 showSpectrumSelection();
-                mImageMain.setImageBitmap(bitmap);
+                this.grabImage(mImageMain);
                 mAttacher.update();
             }
         }
     }
-	
+    	
+    private File createTemporaryFile(String part, String ext) throws Exception
+    {
+        File tempDir= Environment.getExternalStorageDirectory();
+        tempDir=new File(tempDir.getAbsolutePath() + "/.temp/");
+        if(!tempDir.exists()) {
+            tempDir.mkdir();
+        }
+        return File.createTempFile(part, ext, tempDir);
+    }
+    
+    public void grabImage(ImageView imageView)
+    {
+        this.getContentResolver().notifyChange(mImageUri, null);
+        ContentResolver cr = this.getContentResolver();
+        Bitmap bitmap;
+        try {
+            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+            imageView.setImageBitmap(bitmap);
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
+            Log.d("GrabImage", "Failed to load", e);
+        }
+    }
+    
 	private class PhotoTapListener implements OnPhotoTapListener {
 
         @Override

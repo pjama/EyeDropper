@@ -8,5 +8,7 @@
 	<string name="readout_green">G:</string>
 	<string name="readout_blue">B:</string>
 	<string name="readout_hex">#:</string>
-	
+	<string name="descrip_menu_gallery">Gallery icon in main menu</string>
+	<string name="descrip_menu_camera">Camera icon in main menu</string>
+	<string name="descrip_menu_spectrum">Color spectrum in main menu</string>
 </resources>

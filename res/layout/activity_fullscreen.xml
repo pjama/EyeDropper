@@ -2,40 +2,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:background="@drawable/black_pattern05"
     tools:context=".FullscreenActivity" >
-
-    <TextView
-        android:id="@+id/fullscreen_content"
+	
+    <LinearLayout
+        android:id="@+id/linear_main_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:keepScreenOn="true"
-        android:textColor="#33b5e5"
-        android:textSize="50sp"
-        android:textStyle="bold" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true" >
-	
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?buttonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="vertical"
-            tools:ignore="UselessParent" >
+        android:orientation="vertical">
+        
+        <ImageView 
+            android:id="@+id/menu_gallery"
+            android:contentDescription="@string/descrip_menu_gallery"
+            android:layout_width="120dip"
+            android:layout_height="120dip"
+            android:layout_gravity="center"
+            android:src="@drawable/gallery"/>
+        
+        <ImageView 
+            android:id="@+id/menu_camera"
+            android:contentDescription="@string/descrip_menu_camera"
+            android:layout_width="120dip"
+            android:layout_height="120dip"
+            android:layout_gravity="center"
+            android:src="@drawable/camera"/>
+        
+        <ImageView 
+            android:id="@+id/menu_spectrum"
+            android:contentDescription="@string/descrip_menu_spectrum"
+            android:layout_width="120dip"
+            android:layout_height="120dip"
+            android:layout_gravity="center"
+            android:src="@drawable/gallery"/>
+        
+    </LinearLayout>
     
-            <LinearLayout 
-                android:id="@+id/linear_color_sample"
-                android:layout_width="match_parent"
-                android:layout_height="120dip"
-                android:layout_gravity="right"
-                android:orientation="horizontal">
+    <LinearLayout
+		android:id="@+id/fullscreen_content_controls"
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top|center_horizontal"
+		android:orientation="vertical"
+		android:visibility="gone" >
+
+		<LinearLayout 
+			android:id="@+id/linear_color_sample"
+			android:layout_width="match_parent"
+			android:layout_height="120dip"
+			android:layout_gravity="right"
+			android:orientation="horizontal">
                 
                 <ImageView 
                     android:id="@+id/color_sample"
@@ -87,7 +103,7 @@
             
             <ImageView 
 		        android:id="@+id/image_main"
-		        android:src="@drawable/color_wheel"
+		        android:src="@drawable/spectrum"
 		        android:contentDescription="@string/image_main_description"
 		        android:layout_width="320dip"
 		        android:layout_height="320dip"
@@ -95,6 +111,5 @@
 		        android:background="@color/gray_overlay"/>
 		    
         </LinearLayout>
-    </FrameLayout>
 
 </FrameLayout>

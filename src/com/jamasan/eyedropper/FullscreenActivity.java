@@ -3,15 +3,18 @@ package com.jamasan.eyedropper;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +23,8 @@ import com.jamasan.eyedropper.R.id;
 
 public class FullscreenActivity extends Activity {
 	
-	static final int REQUEST_IMAGE_CAPTURE = 1;
+	static final int REQUEST_IMAGE_CAPTURE = 1001;
+	static final int REQUEST_IMAGE_LOAD = 1002;
 	
 	private PhotoViewAttacher mAttacher;
 	private ColorRAL mRAL;
@@ -30,7 +34,7 @@ public class FullscreenActivity extends Activity {
 	private ImageView mMenuGallery;
 	private ImageView mMenuSpectrum;
 	
-	private LinearLayout mMainLayout;
+	private FrameLayout mMainLayout;
 	private TextView mReadoutRed;
 	private TextView mReadoutGreen;
 	private TextView mReadoutBlue;
@@ -53,22 +57,22 @@ public class FullscreenActivity extends Activity {
 	
 	@Override
 	protected void onStop() {
-		releaseMainLayout();
-		releaseMenu();
+		//releaseMainLayout();
+		//releaseMenu();
 		super.onStop();
 	}
 	
 	private void allocateMainLayout() {
-		this.mMainLayout = (LinearLayout)findViewById(id.eyedropper_main);
-		mImageMain = (ImageView)findViewById(id.image_main);
+		this.mMainLayout = (FrameLayout)findViewById(R.id.eyedropper_main);
+		mImageMain = (ImageView)findViewById(R.id.image_main);
 		mAttacher = new PhotoViewAttacher(mImageMain);
 		mAttacher.setOnPhotoTapListener(new PhotoTapListener());
 		
-		this.mReadoutRed = (TextView)findViewById(id.text_red_readout);
-		this.mReadoutGreen = (TextView)findViewById(id.text_green_readout);
-		this.mReadoutBlue = (TextView)findViewById(id.text_blue_readout);
-		this.mReadoutHex = (TextView)findViewById(id.text_hex_readout);
-		this.mColorSwatch = (ImageView)findViewById(id.color_sample);
+		this.mReadoutRed = (TextView)findViewById(R.id.text_red_readout);
+		this.mReadoutGreen = (TextView)findViewById(R.id.text_green_readout);
+		this.mReadoutBlue = (TextView)findViewById(R.id.text_blue_readout);
+		this.mReadoutHex = (TextView)findViewById(R.id.text_hex_readout);
+		this.mColorSwatch = (ImageView)findViewById(R.id.color_sample);
 	}
 	
 	private void releaseMainLayout() {
@@ -94,6 +98,8 @@ public class FullscreenActivity extends Activity {
 		this.mMenuGallery = (ImageView)findViewById(id.menu_gallery);
 		this.mMenuSpectrum = (ImageView)findViewById(id.menu_spectrum);
 		
+		this.mMenuCamera.setOnClickListener(handler);
+		this.mMenuGallery.setOnClickListener(handler);
 		this.mMenuSpectrum.setOnClickListener(handler);
 	}
 	
@@ -125,8 +131,12 @@ public class FullscreenActivity extends Activity {
 			switch(view.getId()) {
 			case R.id.menu_camera:
 				dispatchTakePictureIntent();
+				return;
 			case R.id.menu_gallery:
-				//
+				Intent intent = new Intent(Intent.ACTION_PICK);
+				intent.setType("image/*");
+				startActivityForResult(intent, REQUEST_IMAGE_LOAD);
+				return;
 			case R.id.menu_spectrum:
 				showSpectrumSelection();
 			}
@@ -162,10 +172,36 @@ public class FullscreenActivity extends Activity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageMain.setImageBitmap(imageBitmap);
+    	super.onActivityResult(requestCode, resultCode, data); 
+    	switch(requestCode) { 
+        case REQUEST_IMAGE_LOAD:
+            if(resultCode == RESULT_OK){  
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                ContentResolver resolver = getContentResolver();
+                Cursor cursor;
+                cursor = resolver.query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+                
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                showSpectrumSelection();
+                mImageMain.setImageBitmap(bitmap);
+                mAttacher.update();
+            }
+            return;
+        case REQUEST_IMAGE_CAPTURE:
+        	if(resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                Bitmap bitmap = (Bitmap) extras.get("data");
+                showSpectrumSelection();
+                mImageMain.setImageBitmap(bitmap);
+                mAttacher.update();
+            }
         }
     }
 	
@@ -180,7 +216,7 @@ public class FullscreenActivity extends Activity {
 			int posY = (int)(bitmap.getHeight() * y);
 			int pixelColor = bitmap.getPixel(posX, posY);
 			ColorPoint color = new ColorPoint(pixelColor);
-        	updateColorReadout(color, true);
+        	updateColorReadout(color, false);
         }
     };
 }

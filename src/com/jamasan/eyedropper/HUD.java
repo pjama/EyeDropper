@@ -19,7 +19,7 @@ public class HUD {
 	public HUD(Activity activity) {
 		mActivity = activity;
 		mColors = new ArrayList<ColorPoint>();
-		this.mRAL = new ColorRAL();
+		this.mRAL = new ColorRAL(mActivity);
 		mListRowItems = new ArrayList<CustomListItem>();
 		mListColors = (ListView)activity.findViewById(R.id.list_colors);
 		
@@ -33,7 +33,8 @@ public class HUD {
 		mColors.clear();
 		mListRowItems.clear();
 		
-		
+		mBaseColor.setName(mBaseColor.getRGB());
+		mBaseColor.setDescription("0x"+mBaseColor.getHex());
 		mListRowItems.add(new CustomListItem(mBaseColor));
 		
 		ColorPoint colorWebSafe = mBaseColor.getWebSafeColor();

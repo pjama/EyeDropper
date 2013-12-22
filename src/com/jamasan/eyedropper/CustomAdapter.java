@@ -36,7 +36,6 @@ public class CustomAdapter extends ArrayAdapter<CustomListItem> {
         CustomListItem item = mItems.get(position);
         
         if (item != null) {
-        	
         	ImageView tImage = (ImageView) v.findViewById(R.id.row_image);
         	TextView tTitle = (TextView) v.findViewById(R.id.rowTitle);
         	TextView tDescription = (TextView) v.findViewById(R.id.rowDescription);
@@ -51,7 +50,6 @@ public class CustomAdapter extends ArrayAdapter<CustomListItem> {
         		tDescription.setText(item.getDescription());
         	}
         	if(item.getIconSize() > 0) { 
-    			
     			ViewGroup.LayoutParams params = tImage.getLayoutParams();
         		params.height = Utils.getDip(mContext, item.getIconSize());
         		params.width = Utils.getDip(mContext, item.getIconSize());

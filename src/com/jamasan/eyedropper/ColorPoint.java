@@ -25,6 +25,14 @@ public class ColorPoint {
 		this.b = b;
 	}
 	
+	public ColorPoint(int argb, String name) {
+		this.mName = name;
+		this.a = 0xFF;
+		this.r = (argb >> 16) & 0xFF;
+		this.g = (argb >>  8) & 0xFF;
+		this.b = (argb >>  0) & 0xFF;
+	}
+	
 	public ColorPoint(int argb) {
 		this.a = (argb >> 24) & 0xFF;
 		this.r = (argb >> 16) & 0xFF;
@@ -56,8 +64,11 @@ public class ColorPoint {
 		return this.b;
 	}
 	
+	public String getRGB() {
+		return String.format("R: %d G: %d B: %d", this.r, this.g, this.b);
+	}
 	public String getHex() {
-		String hex = String.format("0x%06X", this.getARGB() & 0xFFFFFF);
+		String hex = String.format("%06X", this.getARGB() & 0xFFFFFF);
 		return hex;
 	}
 	

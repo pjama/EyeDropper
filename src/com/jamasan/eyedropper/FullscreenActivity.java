@@ -7,6 +7,7 @@ import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -63,6 +64,14 @@ public class FullscreenActivity extends Activity {
 		mAttacher.setOnPhotoTapListener(new PhotoTapListener());
 		mHUD = new HUD(this);
 	}
+	
+	@Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.activity_fullscreen);
+        this.allocateMainLayout();
+        this.allocateMenu();
+    }
 	
 	private void setMainLayoutVisibility(Boolean visible) {
 		if(visible) {

@@ -65,7 +65,7 @@ public class ColorPoint {
 	}
 	
 	public String getRGB() {
-		return String.format("R: %d G: %d B: %d", this.r, this.g, this.b);
+		return String.format("R:%d G:%d B:%d", this.r, this.g, this.b);
 	}
 	public String getHex() {
 		String hex = String.format("%06X", this.getARGB() & 0xFFFFFF);

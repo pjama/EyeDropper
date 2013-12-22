@@ -1,14 +1,15 @@
 <LinearLayout 
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="horizontal"
-	android:layout_width="fill_parent" 
+	android:layout_width="match_parent" 
 	android:layout_height="wrap_content"
 	android:paddingBottom="5dip"
 	android:paddingTop="5dip">
 	
 	<ImageView
 		android:id="@+id/row_image"
-		android:layout_width="64dip"
+		android:contentDescription="@string/descrip_row_swatch"
+		android:layout_width="80dip"
 		android:layout_height="64dip" 
 		android:gravity="center"
 		android:padding="1dip" />

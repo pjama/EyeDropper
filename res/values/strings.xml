@@ -11,6 +11,7 @@
 	<string name="descrip_menu_gallery">Gallery icon in main menu</string>
 	<string name="descrip_menu_camera">Camera icon in main menu</string>
 	<string name="descrip_menu_spectrum">Color spectrum in main menu</string>
+	<string name="descrip_row_swatch">Color swatch in custom row list item</string>
 	<string name="ral_1000">Green Beige</string>
 	<string name="ral_1001">Beige</string>
 	<string name="ral_1002">Sand Yellow</string>

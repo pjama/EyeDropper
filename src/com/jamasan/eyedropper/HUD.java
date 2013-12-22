@@ -14,12 +14,15 @@ public class HUD {
 	private ColorPoint mBaseColor;
 	private ArrayList<ColorPoint> mColors;
 	
-	private ColorRAL mRAL;
+	private ColorStandardBase mRAL;
+	private ColorStandardBase mPantone;
 	
 	public HUD(Activity activity) {
 		mActivity = activity;
 		mColors = new ArrayList<ColorPoint>();
-		this.mRAL = new ColorRAL(mActivity);
+		mRAL = new ColorRAL(mActivity);
+		mPantone = new ColorPantone(mActivity);
+		
 		mListRowItems = new ArrayList<CustomListItem>();
 		mListColors = (ListView)activity.findViewById(R.id.list_colors);
 		
@@ -42,6 +45,9 @@ public class HUD {
 		
 		ColorPoint colorRAL = mRAL.getClosestColor(mBaseColor); 
 		mListRowItems.add(new CustomListItem(colorRAL));
+		
+		ColorPoint colorPantone = mPantone.getClosestColor(mBaseColor); 
+		mListRowItems.add(new CustomListItem(colorPantone));
 		
 		mCustomAdapter = new CustomAdapter(mActivity, R.layout.row_custom, mListRowItems);
 		mListColors.setAdapter(mCustomAdapter);

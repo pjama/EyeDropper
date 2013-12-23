@@ -4,7 +4,6 @@ import java.io.File;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -26,8 +25,7 @@ import android.widget.Toast;
 
 import com.jamasan.eyedropper.R.id;
 
-public class FullscreenActivity extends Activity {
-	
+public class FullscreenActivity extends BaseActivity {
 	static final int REQUEST_IMAGE_CAPTURE = 1001;
 	static final int REQUEST_IMAGE_LOAD = 1002;
 	
@@ -45,9 +43,11 @@ public class FullscreenActivity extends Activity {
 	private Uri mImageUri;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fullscreen);
+		setBehindContentView(R.layout.menu_frame);
+		
 	}
 	
 	@Override

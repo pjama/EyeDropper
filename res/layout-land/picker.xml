@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+		android:id="@+id/eyedropper_main"
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top|left" >
+    
+            <ImageView 
+		        android:id="@+id/image_main"
+		        android:src="@drawable/spectrum"
+		        android:contentDescription="@string/image_main_description"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:layout_gravity="right"
+		        android:layout_marginLeft="220dip"/>
+			
+		    <LinearLayout 
+				android:id="@+id/linear_color_sample"
+				android:layout_width="220dip"
+				android:layout_height="match_parent"
+				android:orientation="vertical"
+				android:layout_gravity="left"
+				android:gravity="left"
+				android:background="#000000">
+                
+		        <FrameLayout 
+		            android:background="#333"
+		            android:layout_width="match_parent"
+		            android:layout_height="40dp" >
+		        	
+		        	<ImageView 
+		        	    android:layout_width="20dp"
+		        	    android:layout_height="20dp"
+		        	    android:background="@drawable/ic_navigation_drawer"
+		        	    android:layout_gravity="left|center_vertical" />
+		        	
+		        </FrameLayout>
+		        
+		        <ListView
+		            android:id="@+id/list_colors"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
+		            android:paddingLeft="10dip" />
+				
+            </LinearLayout>
+			
+        </FrameLayout>
+
+    <FrameLayout 
+        android:id="@+id/frame_color_detail"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:padding="10dip" />
+    
+</FrameLayout>

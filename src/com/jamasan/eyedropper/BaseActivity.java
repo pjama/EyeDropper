@@ -3,26 +3,26 @@ package com.jamasan.eyedropper;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class BaseActivity extends SlidingFragmentActivity {
-	protected ListFragment mFrag;
+	protected ListFragment mListFrag;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		// set the Behind View
 		setBehindContentView(R.layout.menu_frame);
 		if (savedInstanceState == null) {
 			FragmentTransaction t = this.getFragmentManager().beginTransaction();
-			mFrag = new SampleListFragment();
-			t.replace(R.id.menu_frame, mFrag);
+			mListFrag = new MenuListFragment();
+			t.replace(R.id.menu_frame, mListFrag);
 			t.commit();
 		} else {
-			mFrag = (ListFragment)this.getFragmentManager().findFragmentById(R.id.menu_frame);
+			mListFrag = (ListFragment)this.getFragmentManager().findFragmentById(R.id.menu_frame);
 		}
 
 		// customize the SlidingMenu
@@ -31,8 +31,12 @@ public class BaseActivity extends SlidingFragmentActivity {
 		sm.setShadowDrawable(R.drawable.shadow);
 		sm.setBehindOffsetRes(R.dimen.slidingmenu_offset);
 		sm.setFadeDegree(0.35f);
-		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-
-		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+		sm.setTouchmodeMarginThreshold(220);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return super.onOptionsItemSelected(item);
 	}
 }

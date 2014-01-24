@@ -84,8 +84,9 @@ public class MenuListFragment extends ListFragment {
 		}
 		
 		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.replace(R.id.main_fragment, fragment);
-		fragmentTransaction.commit();
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		transaction.replace(R.id.main_fragment, fragment);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 }

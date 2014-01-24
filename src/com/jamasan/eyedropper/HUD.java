@@ -3,6 +3,12 @@ package com.jamasan.eyedropper;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class HUD {
@@ -51,5 +57,25 @@ public class HUD {
 		
 		mCustomAdapter = new CustomAdapter(mActivity, R.layout.row_custom, mListRowItems);
 		mListColors.setAdapter(mCustomAdapter);
+		mListColors.setOnItemClickListener(onItemClickListener);
 	}
+	
+	OnItemClickListener onItemClickListener = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
+			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();
+			CustomListItem item = adapter.getItem(pos);
+			ColorPoint color = item.getColor();
+			
+			Fragment fragment = new DetailFragment();
+			fragment.setArguments(color.toBundle());
+			
+			FragmentManager manager = mActivity.getFragmentManager();
+			FragmentTransaction transaction = manager.beginTransaction();
+			transaction.replace(R.id.main_fragment, fragment);
+			transaction.addToBackStack(null);
+			transaction.commit();
+		}
+	};
 }

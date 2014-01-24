@@ -1,5 +1,7 @@
 package com.jamasan.eyedropper;
 
+import android.os.Bundle;
+
 public class ColorPoint {
 	private int a;
 	private int r;
@@ -107,6 +109,13 @@ public class ColorPoint {
 		return distance;
 	}
 	
+	public Bundle toBundle() {
+		Bundle bundle = new Bundle();
+		bundle.putInt("color_argb", this.getARGB());
+		bundle.putString("name", this.getName());
+		
+		return bundle;
+	}
 	@Override
 	public String toString() {
 		return this.getHex();

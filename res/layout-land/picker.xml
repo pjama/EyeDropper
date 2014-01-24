@@ -11,7 +11,7 @@
     
             <ImageView 
 		        android:id="@+id/image_main"
-		        android:src="@drawable/spectrum"
+		        android:src="@drawable/spectrum_circular"
 		        android:contentDescription="@string/image_main_description"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"

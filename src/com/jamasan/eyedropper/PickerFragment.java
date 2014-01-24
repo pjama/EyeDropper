@@ -71,6 +71,9 @@ public class PickerFragment extends Fragment {
 		if (mDrawable != null) {
 	    	mImageMain.setImageDrawable(mDrawable);
 	    	mAttacher.update();
+	    	
+	    	//BaseActivity baseActivity = (BaseActivity)getActivity();
+	    	//baseActivity.mListFrag.
 		}
 	}
 	

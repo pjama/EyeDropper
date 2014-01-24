@@ -1,5 +1,7 @@
 package com.jamasan.eyedropper;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -12,18 +14,25 @@ public class FullscreenActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fullscreen);
 		PickerFragment fragment = new PickerFragment();
-		getFragmentManager().beginTransaction().add(R.id.main_fragment, fragment).commit();
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.add(R.id.main_fragment, fragment);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 	
 	@Override
-    public void onConfigurationChanged(Configuration newConfig){
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setContentView(R.layout.activity_fullscreen);
     }
 	
 	@Override
-	public void onStart() {
-		super.onStart();
-		
+	public void onBackPressed(){
+	    FragmentManager fm = getFragmentManager();
+	    if (fm.getBackStackEntryCount() > 1) {
+	        fm.popBackStack();
+	    } else {
+	        super.onBackPressed();  
+	    }
 	}
 }

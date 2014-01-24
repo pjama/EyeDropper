@@ -3,7 +3,6 @@ package com.jamasan.eyedropper;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.view.View;
@@ -12,7 +11,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class HUD {
-	private Activity mActivity;
+	private FullscreenActivity mActivity;
 	private ListView mListColors;
 	private CustomAdapter mCustomAdapter;
 	private ArrayList<CustomListItem> mListRowItems;
@@ -24,7 +23,7 @@ public class HUD {
 	private ColorStandardBase mPantone;
 	
 	public HUD(Activity activity) {
-		mActivity = activity;
+		mActivity = (FullscreenActivity)activity;
 		mColors = new ArrayList<ColorPoint>();
 		mRAL = new ColorRAL(mActivity);
 		mPantone = new ColorPantone(mActivity);
@@ -32,6 +31,14 @@ public class HUD {
 		mListRowItems = new ArrayList<CustomListItem>();
 		mListColors = (ListView)activity.findViewById(R.id.list_colors);
 		
+	}
+	
+	public void reset() {
+		mColors.clear();
+		mListRowItems.clear();
+		if (mCustomAdapter != null) {
+			mCustomAdapter.clear();
+		}
 	}
 	
 	public void setBaseColor(ColorPoint color) {
@@ -68,14 +75,15 @@ public class HUD {
 			CustomListItem item = adapter.getItem(pos);
 			ColorPoint color = item.getColor();
 			
-			Fragment fragment = new DetailFragment();
+			DetailFragment fragment = new DetailFragment();
 			fragment.setArguments(color.toBundle());
 			
 			FragmentManager manager = mActivity.getFragmentManager();
 			FragmentTransaction transaction = manager.beginTransaction();
-			transaction.replace(R.id.main_fragment, fragment);
+			transaction.add(R.id.main_fragment, fragment);
 			transaction.addToBackStack(null);
 			transaction.commit();
+			mActivity.setDetailedView(fragment);
 		}
 	};
 }

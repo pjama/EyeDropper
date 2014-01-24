@@ -1,8 +1,5 @@
 package com.jamasan.eyedropper;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -59,34 +56,23 @@ public class MenuListFragment extends ListFragment {
 			icon.setImageResource(getItem(position).iconRes);
 			TextView title = (TextView) convertView.findViewById(R.id.row_title);
 			title.setText(getItem(position).tag);
-
 			return convertView;
 		}
 	}
 
 	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
-		Fragment fragment = new PickerFragment();
-		Bundle args = new Bundle();
+		ImageFetcher parent = (ImageFetcher)getActivity();
 		switch (position) {
 		case 0:
-			args.putInt("action", REQUEST_IMAGE_LOAD);
-			fragment.setArguments(args);
+			parent.startGalleryIntent();
 			break;
 		case 1:
-			args.putInt("action", REQUEST_IMAGE_CAPTURE);
-			fragment.setArguments(args);
+			parent.startCameraIntent();
 			break;
 		case 2:
-			args.putInt("action", REQUEST_SPECTRUM);
-			fragment.setArguments(args);
+			parent.setImageToSpectrum();
 			break;
 		}
-		
-		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		transaction.replace(R.id.main_fragment, fragment);
-		transaction.addToBackStack(null);
-		transaction.commit();
 	}
 }

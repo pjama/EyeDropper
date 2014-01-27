@@ -31,6 +31,9 @@ public class HUD {
 		mListRowItems = new ArrayList<CustomListItem>();
 		mListColors = (ListView)activity.findViewById(R.id.list_colors);
 		
+		mCustomAdapter = new CustomAdapter(mActivity, R.layout.row_custom, mListRowItems);
+		mListColors.setAdapter(mCustomAdapter);
+		mListColors.setOnItemClickListener(onItemClickListener);
 	}
 	
 	public void reset() {
@@ -62,9 +65,7 @@ public class HUD {
 		ColorPoint colorPantone = mPantone.getClosestColor(mBaseColor); 
 		mListRowItems.add(new CustomListItem(colorPantone));
 		
-		mCustomAdapter = new CustomAdapter(mActivity, R.layout.row_custom, mListRowItems);
-		mListColors.setAdapter(mCustomAdapter);
-		mListColors.setOnItemClickListener(onItemClickListener);
+		((CustomAdapter)mListColors.getAdapter()).notifyDataSetChanged();
 	}
 	
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {

@@ -27,8 +27,8 @@ public class MenuListFragment extends ListFragment {
 		adapter.add(new SampleItem("Gallery", android.R.drawable.ic_menu_gallery));
 		adapter.add(new SampleItem("Camera", android.R.drawable.ic_menu_camera));
 		adapter.add(new SampleItem("Spectrum", R.drawable.gallery));
-		adapter.add(new SampleItem("Favorites", android.R.drawable.star_off));
-		adapter.add(new SampleItem("Calculator", android.R.drawable.star_big_off));
+		//adapter.add(new SampleItem("Favorites", android.R.drawable.star_off));
+		//adapter.add(new SampleItem("Calculator", android.R.drawable.star_big_off));
 		
 		setListAdapter(adapter);
 	}

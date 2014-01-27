@@ -58,12 +58,24 @@ public class ColorPoint {
 		return this.r;
 	}
 	
+	public void setR(int r) {
+		this.r = r;
+	}
+	
 	public int getG() {
 		return this.g;
 	}
 	
+	public void setG(int g) {
+		this.g = g;
+	}
+	
 	public int getB() {
 		return this.b;
+	}
+	
+	public void setB(int b) {
+		this.b = b;
 	}
 	
 	public String getRGB() {

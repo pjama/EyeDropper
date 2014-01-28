@@ -6,12 +6,12 @@
     android:clickable="true" >
     
     <LinearLayout
-        android:layout_width="320dip"
+        android:layout_width="340dip"
         android:layout_height="match_parent"
         android:orientation="vertical" >
 	    
 	    <FrameLayout
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content" >
 	    
 	        <ImageView 
@@ -29,6 +29,14 @@
 	            android:textColor="#FFF"
 	            android:paddingLeft="120dip"
 	            android:paddingTop="10dip" />
+	        
+	        <ImageView
+	            android:id="@+id/color_detail_date"
+	            android:layout_width="32dip"
+	            android:layout_height="32dip"
+	            android:layout_gravity="right|bottom"
+	            android:src="@drawable/heart_add"
+	            android:clickable="true" />
 	        
 	    </FrameLayout>
 	    

@@ -54,7 +54,6 @@ public class SQLiteManager {
 
 		db.setVersion(1);
 		db.setLocale(Locale.getDefault());
-		db.setLockingEnabled(true);
 	}
 	
 	public void reset() {
@@ -79,14 +78,14 @@ public class SQLiteManager {
 		return db.replace(TABLE_COLORS, null, values);
 	}
 	
-	public ArrayList<ColorPoint> getColors() {
-		return getAwards(null, null, null);
+	public ArrayList<ColorSample> getColors() {
+		return getColors(null, null, null);
 	}
 	
 	
-	public ArrayList<ColorPoint> getAwards(String having, String selection, String groupby) {
+	public ArrayList<ColorSample> getColors(String having, String selection, String groupby) {
 		
-		ArrayList<ColorPoint> colors = new ArrayList<ColorPoint>();
+		ArrayList<ColorSample> colors = new ArrayList<ColorSample>();
 		db.beginTransaction();
 		Cursor cur = null;
 		
@@ -110,14 +109,18 @@ public class SQLiteManager {
 			String source = null;
 			
 			while (!cur.isAfterLast()) {
-				
-				SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+				SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 				
 				argb = cur.getInt(1);
-				dateCreated = (Date)formatter.parse(cur.getString(2));
-				source = cur.getString(3);
+				ColorSample color = new ColorSample(argb);
 				
-				colors.add(new ColorPoint(argb));
+				dateCreated = (Date)formatter.parse(cur.getString(2));
+				color.setDate(dateCreated);
+				
+				source = cur.getString(3);
+				color.setSource(source);
+				
+				colors.add(color);
 				cur.moveToNext();
 			}
 			

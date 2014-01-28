@@ -99,6 +99,25 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 		hideDetailedView();
 	}
 	
+	public void showFavorites() {
+		getSlidingMenu().showContent();
+		FavoritesFragment fragment = new FavoritesFragment();
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.replace(R.id.main_fragment, fragment);
+		transaction.commit();
+	}
+	
+	public void showCalculator() {
+		getSlidingMenu().showContent();
+		DetailFragment fragment = new DetailFragment();
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.replace(R.id.main_fragment, fragment);
+		transaction.commit();
+		this.setDetailedView(fragment);
+	}
+	
 	private File createTemporaryFile(String part, String ext) throws Exception {
         File tempDir= Environment.getExternalStorageDirectory();
         tempDir = new File(tempDir.getAbsolutePath() + "/.temp/");

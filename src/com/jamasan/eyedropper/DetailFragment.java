@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 public class DetailFragment extends Fragment {
 
 	private ColorSample mColor;
+	private TextView mColorTitle;
 	private ImageView mColorSwatch;
 	private Activity mActivity;
 	
@@ -37,6 +40,8 @@ public class DetailFragment extends Fragment {
 		Bundle args = getArguments();
 		if (args != null) {
 			mColor = new ColorSample(args);
+		} else {
+			mColor = new ColorSample(0);
 		}
 		
 		mRAL = new ColorRAL(mActivity);
@@ -48,11 +53,8 @@ public class DetailFragment extends Fragment {
 	@Override
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		TextView colorTitle = (TextView)mActivity.findViewById(R.id.color_detail_title);
+		mColorTitle = (TextView)mActivity.findViewById(R.id.color_detail_title);
 		mColorSwatch = (ImageView)mActivity.findViewById(R.id.color_detail_swatch);
-		
-		colorTitle.setText(mColor.getName());
-		this.setColorSwatch(mColor.getARGB());
 		
 		mSeekBarRed = (SeekBar)mActivity.findViewById(R.id.color_editor_red);
 		mSeekBarGreen = (SeekBar)mActivity.findViewById(R.id.color_editor_green);
@@ -62,16 +64,24 @@ public class DetailFragment extends Fragment {
 		mSeekBarGreen.setOnSeekBarChangeListener(onSeekBarChangeListener);
 		mSeekBarBlue.setOnSeekBarChangeListener(onSeekBarChangeListener);
 		
-		mSeekBarRed.setProgress(mColor.getR());
-		mSeekBarGreen.setProgress(mColor.getG());
-		mSeekBarBlue.setProgress(mColor.getB());
-		
 		mListRowItems = new ArrayList<CustomListItem>();
 		mRelatedColors = (ListView)mActivity.findViewById(R.id.list_related_colors);
 		mCustomAdapter = new CustomAdapter(mActivity, R.layout.row_custom, mListRowItems);
 		mRelatedColors.setAdapter(mCustomAdapter);
+		mRelatedColors.setOnItemClickListener(onClickRelatedColor);
 		
-		this.updateRelatedColours();
+		setColorDetail(mColor);
+	}
+	
+	private void setColorDetail(ColorPoint color) {
+		mColorTitle.setText(color.getName());
+		this.setColorSwatch(color.getARGB());
+
+		mSeekBarRed.setProgress(color.getR());
+		mSeekBarGreen.setProgress(color.getG());
+		mSeekBarBlue.setProgress(color.getB());
+		
+		this.updateRelatedColours();		
 	}
 	
 	private void setColorSwatch(int color) {
@@ -95,7 +105,7 @@ public class DetailFragment extends Fragment {
 		
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			
+			mColorTitle.setText(mActivity.getText(R.string.custom_color));
 		}
 		
 		@Override
@@ -116,6 +126,17 @@ public class DetailFragment extends Fragment {
 			default:
 				break;
 			}
+		}
+	};
+	
+	OnItemClickListener onClickRelatedColor = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
+			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();
+			CustomListItem item = adapter.getItem(pos);
+			ColorPoint color = item.getColor();
+			setColorDetail(color);
 		}
 	};
 }

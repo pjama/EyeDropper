@@ -111,7 +111,7 @@ public class PickerFragment extends Fragment {
     }
     
     public void setImageToSpectrum() {
-    	mDrawable = getResources().getDrawable(R.drawable.spectrum);
+    	mDrawable = getResources().getDrawable(R.drawable.spectrum_circular);
     	mImageMain.setImageDrawable(mDrawable);
     	mAttacher.update();
     	mHUD.reset();

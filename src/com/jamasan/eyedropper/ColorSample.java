@@ -14,7 +14,7 @@ public class ColorSample extends ColorPoint {
 	private String mSource;
 	
 	public ColorSample(int argb) {
-		super(argb);
+		super(argb | (0xFF << 24));
 	}
 	
 	public ColorSample(Bundle args) {

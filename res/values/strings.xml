@@ -4,6 +4,11 @@
     <string name="app_name">EyeDropper</string>
 	<string name="image_main_description">Main image container</string>
 	<string name="color_sample_desc">Color swatch display</string>
+	<string name="menu_gallery">Gallery</string>
+	<string name="menu_camera">Camera</string>
+	<string name="menu_spectrum">Spectrum</string>
+	<string name="menu_favorites">Favourites</string>
+	<string name="menu_color_editor">Color Editor</string>
 	<string name="readout_red">R:</string>
 	<string name="readout_green">G:</string>
 	<string name="readout_blue">B:</string>
@@ -11,6 +16,7 @@
 	<string name="color_editor">Colour Editor</string>
 	<string name="custom_color">Custom Colour</string>
 	<string name="favorites">Favourites</string>
+	<string name="no_favorites">No Favourites Yet.</string>
 	<string name="descrip_menu_gallery">Gallery icon in main menu</string>
 	<string name="descrip_menu_camera">Camera icon in main menu</string>
 	<string name="descrip_menu_spectrum">Color spectrum in main menu</string>

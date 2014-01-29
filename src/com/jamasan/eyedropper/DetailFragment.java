@@ -2,11 +2,11 @@ package com.jamasan.eyedropper;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -21,7 +21,7 @@ public class DetailFragment extends Fragment {
 	private ColorSample mColor;
 	private TextView mColorTitle;
 	private ImageView mColorSwatch;
-	private Activity mActivity;
+	private ImageView mSaveFavorite;
 	
 	private ColorRAL mRAL;
 	private ColorPantone mPantone;
@@ -34,9 +34,10 @@ public class DetailFragment extends Fragment {
 	private CustomAdapter mCustomAdapter;
 	private ArrayList<CustomListItem> mListRowItems;
 	
+	private SQLiteManager mSQL;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mActivity = getActivity();
 		Bundle args = getArguments();
 		if (args != null) {
 			mColor = new ColorSample(args);
@@ -44,8 +45,10 @@ public class DetailFragment extends Fragment {
 			mColor = new ColorSample(0);
 		}
 		
-		mRAL = new ColorRAL(mActivity);
-		mPantone = new ColorPantone(mActivity);
+		mRAL = new ColorRAL(getActivity());
+		mPantone = new ColorPantone(getActivity());
+		
+		mSQL = new SQLiteManager(getActivity());
 		
 		return inflater.inflate(R.layout.detail_fragment, container, false);
 	}
@@ -53,20 +56,22 @@ public class DetailFragment extends Fragment {
 	@Override
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		mColorTitle = (TextView)mActivity.findViewById(R.id.color_detail_title);
-		mColorSwatch = (ImageView)mActivity.findViewById(R.id.color_detail_swatch);
+		mColorTitle = (TextView)getActivity().findViewById(R.id.color_detail_title);
+		mColorSwatch = (ImageView)getActivity().findViewById(R.id.color_detail_swatch);
+		mSaveFavorite = (ImageView)getActivity().findViewById(R.id.color_detail_favorite);
+		mSaveFavorite.setOnClickListener(onClickListener);
 		
-		mSeekBarRed = (SeekBar)mActivity.findViewById(R.id.color_editor_red);
-		mSeekBarGreen = (SeekBar)mActivity.findViewById(R.id.color_editor_green);
-		mSeekBarBlue = (SeekBar)mActivity.findViewById(R.id.color_editor_blue);
+		mSeekBarRed = (SeekBar)getActivity().findViewById(R.id.color_editor_red);
+		mSeekBarGreen = (SeekBar)getActivity().findViewById(R.id.color_editor_green);
+		mSeekBarBlue = (SeekBar)getActivity().findViewById(R.id.color_editor_blue);
 		
 		mSeekBarRed.setOnSeekBarChangeListener(onSeekBarChangeListener);
 		mSeekBarGreen.setOnSeekBarChangeListener(onSeekBarChangeListener);
 		mSeekBarBlue.setOnSeekBarChangeListener(onSeekBarChangeListener);
 		
 		mListRowItems = new ArrayList<CustomListItem>();
-		mRelatedColors = (ListView)mActivity.findViewById(R.id.list_related_colors);
-		mCustomAdapter = new CustomAdapter(mActivity, R.layout.row_custom, mListRowItems);
+		mRelatedColors = (ListView)getActivity().findViewById(R.id.list_related_colors);
+		mCustomAdapter = new CustomAdapter(getActivity(), R.layout.row_custom, mListRowItems);
 		mRelatedColors.setAdapter(mCustomAdapter);
 		mRelatedColors.setOnItemClickListener(onClickRelatedColor);
 		
@@ -105,7 +110,7 @@ public class DetailFragment extends Fragment {
 		
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			mColorTitle.setText(mActivity.getText(R.string.custom_color));
+			mColorTitle.setText(getActivity().getText(R.string.custom_color));
 		}
 		
 		@Override
@@ -126,6 +131,22 @@ public class DetailFragment extends Fragment {
 			default:
 				break;
 			}
+		}
+	};
+	
+	OnClickListener onClickListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.color_detail_favorite:
+				mSQL.saveColor(mColor);
+				break;
+
+			default:
+				break;
+			}
+			
 		}
 	};
 	

@@ -31,7 +31,7 @@
 	            android:paddingTop="10dip" />
 	        
 	        <ImageView
-	            android:id="@+id/color_detail_date"
+	            android:id="@+id/color_detail_favorite"
 	            android:layout_width="32dip"
 	            android:layout_height="32dip"
 	            android:layout_gravity="right|bottom"

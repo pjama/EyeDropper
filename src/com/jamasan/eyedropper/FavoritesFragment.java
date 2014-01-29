@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class FavoritesFragment extends Fragment {
 
@@ -36,10 +37,17 @@ public class FavoritesFragment extends Fragment {
 		mListFavorites.setOnItemClickListener(onItemClickListener);
 		mSQL = new SQLiteManager(getActivity());
 		ArrayList<ColorSample> colors = mSQL.getColors();
-		for(ColorSample color : colors) {
-			mListRowItems.add(new CustomListItem(color));
+		
+		TextView textNoFavorites = (TextView)getActivity().findViewById(R.id.favorites_unavailable);
+		if(colors.isEmpty()) {
+			textNoFavorites.setVisibility(View.VISIBLE);
+		} else {
+			textNoFavorites.setVisibility(View.GONE);
+			for(ColorSample color : colors) {
+				mListRowItems.add(new CustomListItem(color));
+			}
+			((CustomAdapter)mListFavorites.getAdapter()).notifyDataSetChanged();
 		}
-		((CustomAdapter)mListFavorites.getAdapter()).notifyDataSetChanged();
 	}
 	
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
@@ -55,8 +63,7 @@ public class FavoritesFragment extends Fragment {
 			
 			FragmentManager manager = getActivity().getFragmentManager();
 			FragmentTransaction transaction = manager.beginTransaction();
-			transaction.add(R.id.main_fragment, fragment);
-			transaction.addToBackStack(null);
+			transaction.replace(R.id.main_fragment, fragment);
 			transaction.commit();
 			((FullscreenActivity)getActivity()).setDetailedView(fragment);
 		}

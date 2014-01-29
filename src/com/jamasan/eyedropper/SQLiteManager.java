@@ -38,8 +38,8 @@ public class SQLiteManager {
     	"CREATE TABLE IF NOT EXISTS " + TABLE_COLORS + " (" + 
     	COL_COLOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     	COL_COLOR_ARGB + " INT, " +
-    	COL_COLOR_SOURCE + " TEXT " +
-    	COL_COLOR_DATE_CREATED + " DATE);";
+    	COL_COLOR_SOURCE + " TEXT, " +
+    	COL_COLOR_DATE_CREATED + " TEXT);";
 		
 	final static String DROP_TABLE_COLORS = 
 		"DROP TABLE IF EXISTS " + TABLE_COLORS + ";";
@@ -49,9 +49,8 @@ public class SQLiteManager {
 		mContext = context;
 		mOpenHelper = new OpenHelper(mContext);
 		reset();
-
+		
 		db.execSQL(CREATE_TABLE_COLORS);
-
 		db.setVersion(1);
 		db.setLocale(Locale.getDefault());
 	}
@@ -60,20 +59,18 @@ public class SQLiteManager {
 		db = mOpenHelper.getWritableDatabase();
 	}
 	
-	public long insertAwards(ColorPoint color) {
+	public long saveColor(ColorPoint color) {
 		
 		if(color == null)
 			return -1;
-	   
 		reset();
 		ContentValues values = new ContentValues();
-		
-		values.put(COL_COLOR_ARGB, color.getARGB());
 		
 		String strDate;
 		Calendar c = Calendar.getInstance();
 		strDate = String.valueOf(DateFormat.format(DATE_FORMAT, c.getTime()));
 		values.put(COL_COLOR_DATE_CREATED, strDate);
+		values.put(COL_COLOR_ARGB, color.getARGB());
 		
 		return db.replace(TABLE_COLORS, null, values);
 	}

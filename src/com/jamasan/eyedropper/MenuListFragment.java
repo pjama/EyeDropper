@@ -1,5 +1,6 @@
 package com.jamasan.eyedropper;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -23,12 +24,12 @@ public class MenuListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		MenuListAdapter adapter = new MenuListAdapter(getActivity());
-		
-		adapter.add(new SampleItem("Gallery", android.R.drawable.ic_menu_gallery));
-		adapter.add(new SampleItem("Camera", android.R.drawable.ic_menu_camera));
-		adapter.add(new SampleItem("Spectrum", R.drawable.gallery));
-		adapter.add(new SampleItem("Favorites", android.R.drawable.star_off));
-		adapter.add(new SampleItem("Calculator", android.R.drawable.star_big_off));
+		Activity activity = getActivity();
+		adapter.add(new SampleItem(activity.getString(R.string.menu_gallery), android.R.drawable.ic_menu_gallery));
+		adapter.add(new SampleItem(activity.getString(R.string.menu_camera), android.R.drawable.ic_menu_camera));
+		adapter.add(new SampleItem(activity.getString(R.string.menu_spectrum), R.drawable.ic_menu_spectrum));
+		adapter.add(new SampleItem(activity.getString(R.string.menu_favorites), android.R.drawable.star_big_off));
+		adapter.add(new SampleItem(activity.getString(R.string.menu_color_editor), android.R.drawable.ic_menu_edit));
 		
 		setListAdapter(adapter);
 	}

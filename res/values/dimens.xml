@@ -22,6 +22,7 @@
 	<dimen name="color_editor_seeker_width">250dip</dimen>
 	<dimen name="color_editor_seeker_padding">10dip</dimen>
 	<dimen name="color_editor_seeker_labal_padding">10dip</dimen>
+	<dimen name="title_text_size">20sp</dimen>
 	
     <integer name="num_cols">1</integer>
 

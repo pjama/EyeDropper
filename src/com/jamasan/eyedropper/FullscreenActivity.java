@@ -42,7 +42,7 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	@Override
 	public void onBackPressed() {
 	    FragmentManager fm = getFragmentManager();
-	    if (mDetailFragment.isAdded()) {
+	    if (mDetailFragment != null && mDetailFragment.isAdded()) {
 	    	FragmentTransaction transaction = fm.beginTransaction();
 	    	transaction.remove(mDetailFragment);
 	    	transaction.commit();
@@ -74,6 +74,7 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 		startActivityForResult(intent, REQUEST_IMAGE_LOAD);
 		getSlidingMenu().showContent();
 		hideDetailedView();
+		showPickerFragment();
 	}
 	
 	public void startCameraIntent() {
@@ -91,12 +92,14 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
         getSlidingMenu().showContent();
         hideDetailedView();
+        showPickerFragment();
 	}
 	
 	public void setImageToSpectrum() {
-		mPickerFragment.setImageToSpectrum();
 		getSlidingMenu().showContent();
 		hideDetailedView();
+		showPickerFragment();
+		mPickerFragment.setImageToSpectrum();
 	}
 	
 	public void showFavorites() {
@@ -126,6 +129,14 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
         }
         return File.createTempFile(part, ext, tempDir);
     }
+	
+	private void showPickerFragment() {
+		mPickerFragment = new PickerFragment();
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.replace(R.id.main_fragment, mPickerFragment);
+		transaction.commit();	
+	}
 	
 	public void setDetailedView(DetailFragment detailFragment) {
 		mDetailFragment = detailFragment;

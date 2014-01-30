@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 public class ColorSample extends ColorPoint {
 
+	private int mId;
 	private Date mDateCaptured;
 	private String mSource;
 	
@@ -39,6 +40,14 @@ public class ColorSample extends ColorPoint {
 		this.mSource = args.getString("source");
 	}
 	
+	public int getId() {
+		return mId;
+	}
+	
+	public ColorSample setId(int id) {
+		mId = id;
+		return this;
+	}
 	
 	public Date getDateCaptured() {
 		return this.mDateCaptured;

@@ -21,6 +21,13 @@ public class CustomListItem {
 		return this.mIconSize;
 	}
 	
+	public int getColorId() {
+		if(mColor instanceof ColorSample) {
+			return ((ColorSample)mColor).getId();
+		} else {
+			return -1;
+		}
+	}
 	
 	public String getTitle() {
 		return mColor.getName();
@@ -35,12 +42,11 @@ public class CustomListItem {
 		return mColor.getDescription();
 	}
 
-	public void setColor(ColorPoint color) {
+	public void setColor(ColorSample color) {
 		this.mColor = color;
 	}
 	
 	public ColorPoint getColor() {
 		return mColor;
-	}
-	
+	}	
 }

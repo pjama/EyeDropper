@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,7 +36,14 @@ public class FavoritesFragment extends Fragment {
 		mCustomAdapter = new CustomAdapter(getActivity(), R.layout.row_custom, mListRowItems);
 		mListFavorites.setAdapter(mCustomAdapter);
 		mListFavorites.setOnItemClickListener(onItemClickListener);
-		mSQL = new SQLiteManager(getActivity());
+		mListFavorites.setOnItemLongClickListener(onItemLongClickListener);
+		listFavorites();
+	}
+	
+	private void listFavorites() {
+		if(mSQL == null) {
+			mSQL = new SQLiteManager(getActivity());
+		}
 		ArrayList<ColorSample> colors = mSQL.getColors();
 		
 		TextView textNoFavorites = (TextView)getActivity().findViewById(R.id.favorites_unavailable);
@@ -48,6 +56,10 @@ public class FavoritesFragment extends Fragment {
 			}
 			((CustomAdapter)mListFavorites.getAdapter()).notifyDataSetChanged();
 		}
+	}
+	
+	private void deleteFavorite(int colorId) {
+		mSQL.deleteColor(colorId);
 	}
 	
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
@@ -66,6 +78,17 @@ public class FavoritesFragment extends Fragment {
 			transaction.replace(R.id.main_fragment, fragment);
 			transaction.commit();
 			((FullscreenActivity)getActivity()).setDetailedView(fragment);
+		}
+	};
+	
+	OnItemLongClickListener onItemLongClickListener = new OnItemLongClickListener() {
+		public boolean onItemLongClick(AdapterView<?> parent, View v, int pos, long id) {
+			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();
+			CustomListItem item = adapter.getItem(pos);
+			int colorId = item.getColorId();
+			deleteFavorite(colorId);
+			listFavorites();
+			return true;
 		}
 	};
 }

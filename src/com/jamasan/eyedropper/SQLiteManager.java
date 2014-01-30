@@ -19,10 +19,10 @@ public class SQLiteManager {
 
 	private static final String TAG = "SQLiteManager";
 	private Context mContext;
-	private SQLiteDatabase db;
+	private SQLiteDatabase mDb;
 	private OpenHelper mOpenHelper;
 	
-	public static final String DATABASE_NAME = "sqliteWordTwist.db";
+	public static final String DATABASE_NAME = "sqliteWordTwist.db"; //TODO Change db name
 	public static final int DATABASE_VERSION = 2;
 	
 	private static final String TABLE_COLORS = "tbl_colors";
@@ -50,13 +50,13 @@ public class SQLiteManager {
 		mOpenHelper = new OpenHelper(mContext);
 		reset();
 		
-		db.execSQL(CREATE_TABLE_COLORS);
-		db.setVersion(1);
-		db.setLocale(Locale.getDefault());
+		mDb.execSQL(CREATE_TABLE_COLORS);
+		mDb.setVersion(1);
+		mDb.setLocale(Locale.getDefault());
 	}
 	
 	public void reset() {
-		db = mOpenHelper.getWritableDatabase();
+		mDb = mOpenHelper.getWritableDatabase();
 	}
 	
 	public long saveColor(ColorPoint color) {
@@ -72,7 +72,7 @@ public class SQLiteManager {
 		values.put(COL_COLOR_DATE_CREATED, strDate);
 		values.put(COL_COLOR_ARGB, color.getARGB());
 		
-		return db.replace(TABLE_COLORS, null, values);
+		return mDb.replace(TABLE_COLORS, null, values);
 	}
 	
 	public ArrayList<ColorSample> getColors() {
@@ -83,13 +83,13 @@ public class SQLiteManager {
 	public ArrayList<ColorSample> getColors(String having, String selection, String groupby) {
 		
 		ArrayList<ColorSample> colors = new ArrayList<ColorSample>();
-		db.beginTransaction();
+		mDb.beginTransaction();
 		Cursor cur = null;
 		
 		try {
 			String orderby = COL_COLOR_DATE_CREATED + " DESC";
 			
-			cur = db.query(
+			cur = mDb.query(
 					TABLE_COLORS,
 					new String[] {COL_COLOR_ID, COL_COLOR_ARGB, COL_COLOR_DATE_CREATED, COL_COLOR_SOURCE},
 					selection,
@@ -101,6 +101,7 @@ public class SQLiteManager {
 			cur.moveToPosition(0);
 			cur.moveToFirst();
 			
+			int id = -1;
 			int argb = -1;
 			Date dateCreated = null;
 			String source = null;
@@ -108,25 +109,26 @@ public class SQLiteManager {
 			while (!cur.isAfterLast()) {
 				SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 				
+				id = cur.getInt(0);
 				argb = cur.getInt(1);
-				ColorSample color = new ColorSample(argb);
-				
 				dateCreated = (Date)formatter.parse(cur.getString(2));
-				color.setDate(dateCreated);
-				
 				source = cur.getString(3);
+				
+				ColorSample color = new ColorSample(argb);
+				color.setId(id);
+				color.setDate(dateCreated);
 				color.setSource(source);
 				
 				colors.add(color);
 				cur.moveToNext();
 			}
 			
-			db.setTransactionSuccessful();
+			mDb.setTransactionSuccessful();
 			
 		} catch (Exception e) {
 			DebugLog.e("Error in transaction", e.toString());
 		} finally {
-			db.endTransaction();
+			mDb.endTransaction();
 
 			if(cur != null)
 				cur.close();
@@ -135,8 +137,29 @@ public class SQLiteManager {
 		return colors;
 	}
 	
+	public boolean isColorSaved(int argb) {
+		String whereClause = COL_COLOR_ARGB + "=?";
+		
+		Cursor cur = mDb.query(TABLE_COLORS,
+						 new String[] {"COUNT(" + COL_COLOR_ID+")"},
+						 whereClause,
+						 new String[] {String.valueOf(argb)},
+						 COL_COLOR_ARGB,
+						 null,
+						 null);
+		cur.moveToFirst();
+		int rowCount = cur.getInt(0);
+		return rowCount > 0;
+	}
+	
+	public int deleteColor(int colorId) {
+		String whereClause = COL_COLOR_ID + "=?";
+		String[] whereArgs = {String.valueOf(colorId)};
+		return mDb.delete(TABLE_COLORS, whereClause, whereArgs);
+	}
+	
 	public void clearColors() {
-		db.execSQL(DROP_TABLE_COLORS);
+		mDb.execSQL(DROP_TABLE_COLORS);
 	}
 	
 	public static List<String> GetColumns(SQLiteDatabase db, String tableName) {
@@ -144,7 +167,7 @@ public class SQLiteManager {
 		List<String> ar = null;
 	    Cursor c = null;
 	    try {
-	        c = db.rawQuery("select * from " + tableName + " limit 1", null);
+	        c = db.rawQuery("SELECT * FROM " + tableName + " LIMIT 1", null);
 	        if (c != null) {
 	            ar = new ArrayList<String>(Arrays.asList(c.getColumnNames()));
 	        }

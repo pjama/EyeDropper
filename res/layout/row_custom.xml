@@ -20,7 +20,7 @@
 		android:orientation="vertical" >
 		
 		<TextView  
-			android:id="@+id/rowTitle"   
+			android:id="@+id/row_title"   
 		 	android:layout_width="fill_parent"   
 			android:layout_height="wrap_content"  
 			android:paddingLeft="5dp"
@@ -29,7 +29,7 @@
 			android:textColor="#FFFFFF" />
 		
 		<TextView  
-			android:id="@+id/rowDescription" 
+			android:id="@+id/row_description" 
 		 	android:layout_width="fill_parent" 
 			android:layout_height="wrap_content"  
 			android:paddingLeft="15dp"  

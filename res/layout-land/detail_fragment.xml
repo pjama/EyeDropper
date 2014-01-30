@@ -73,7 +73,8 @@
 	       	        android:id="@+id/color_editor_red"
 	       	        android:layout_width="@dimen/color_editor_seeker_width"
 	       	        android:layout_height="wrap_content"
-	       	        android:max="255" />
+	       	        android:max="255"
+	       	        style="@android:style/Widget.Holo.SeekBar" />
 	       	    
 	       	</LinearLayout>
 	       	
@@ -96,7 +97,8 @@
 	       	        android:id="@+id/color_editor_green"
 	       	        android:layout_width="@dimen/color_editor_seeker_width"
 	       	        android:layout_height="wrap_content"
-	       	        android:max="255" />
+	       	        android:max="255"
+	       	        style="@android:style/Widget.Holo.SeekBar" />
 	       	    
 	       	</LinearLayout>
 	       	
@@ -119,7 +121,8 @@
 	       	        android:id="@+id/color_editor_blue"
 	       	        android:layout_width="@dimen/color_editor_seeker_width"
 	       	        android:layout_height="wrap_content"
-	       	        android:max="255" />
+	       	        android:max="255"
+	       	        style="@android:style/Widget.Holo.SeekBar" />
 	       	    
 	       	</LinearLayout>
 	        

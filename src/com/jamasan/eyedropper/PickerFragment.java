@@ -30,6 +30,8 @@ public class PickerFragment extends Fragment {
 	static final int REQUEST_IMAGE_CAPTURE = 1001;
 	static final int REQUEST_IMAGE_LOAD = 1002;
 	static final int REQUEST_SPECTRUM = 1003;
+
+	static private final double MAX_BITMAP_SIZE = 4096.0;
 	
 	public PickerFragment() { 
 		setRetainInstance(true);
@@ -90,7 +92,7 @@ public class PickerFragment extends Fragment {
         cursor.close();
         
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-        mImageMain.setImageBitmap(bitmap);
+        mImageMain.setImageBitmap(getScaledBitmap(bitmap));
         mAttacher.update();
         mHUD.reset();
 	}
@@ -100,14 +102,26 @@ public class PickerFragment extends Fragment {
         ContentResolver cr = activity.getContentResolver();
         cr.notifyChange(uri, null);
         
-        Bitmap bitmap;
         try {
-            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, uri);
-            mImageMain.setImageBitmap(bitmap);
+        	Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, uri);
+            mImageMain.setImageBitmap(getScaledBitmap(bitmap));
         } catch (Exception e) {
             Log.d("GrabImage", "Failed to load", e);
         }
         mHUD.reset();
+    }
+    
+    private Bitmap getScaledBitmap(Bitmap bitmap) {
+    	if (bitmap == null) return bitmap;
+
+    	if(bitmap.getHeight() > MAX_BITMAP_SIZE || bitmap.getWidth() > MAX_BITMAP_SIZE) {
+        	double scaleFactor = MAX_BITMAP_SIZE / Math.max(bitmap.getWidth(), bitmap.getHeight());
+        	int scaledHeight = (int)(bitmap.getHeight() * scaleFactor);
+        	int scaledWidth = (int)(bitmap.getWidth() * scaleFactor);
+        	return Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, false);
+        } else {
+        	return bitmap;
+        }
     }
     
     public void setImageToSpectrum() {

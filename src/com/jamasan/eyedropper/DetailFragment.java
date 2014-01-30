@@ -60,7 +60,12 @@ public class DetailFragment extends Fragment {
 		mColorSwatch = (ImageView)getActivity().findViewById(R.id.color_detail_swatch);
 		mSaveFavorite = (ImageView)getActivity().findViewById(R.id.color_detail_favorite);
 		mSaveFavorite.setOnClickListener(onClickListener);
-		
+		boolean isFavorite = mSQL.isColorSaved(mColor.getARGB());
+		if(isFavorite) {
+			mSaveFavorite.setVisibility(View.INVISIBLE);
+		} else {
+			mSaveFavorite.setVisibility(View.VISIBLE);
+		}
 		mSeekBarRed = (SeekBar)getActivity().findViewById(R.id.color_editor_red);
 		mSeekBarGreen = (SeekBar)getActivity().findViewById(R.id.color_editor_green);
 		mSeekBarBlue = (SeekBar)getActivity().findViewById(R.id.color_editor_blue);

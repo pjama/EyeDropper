@@ -37,8 +37,8 @@ public class CustomAdapter extends ArrayAdapter<CustomListItem> {
         
         if (item != null) {
         	ImageView tImage = (ImageView) v.findViewById(R.id.row_image);
-        	TextView tTitle = (TextView) v.findViewById(R.id.rowTitle);
-        	TextView tDescription = (TextView) v.findViewById(R.id.rowDescription);
+        	TextView tTitle = (TextView) v.findViewById(R.id.row_title);
+        	TextView tDescription = (TextView) v.findViewById(R.id.row_description);
         	
         	if (tImage != null) {
     			tImage.setBackgroundColor(item.getColor().getARGB());

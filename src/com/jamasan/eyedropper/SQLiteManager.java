@@ -141,15 +141,20 @@ public class SQLiteManager {
 		String whereClause = COL_COLOR_ARGB + "=?";
 		
 		Cursor cur = mDb.query(TABLE_COLORS,
-						 new String[] {"COUNT(" + COL_COLOR_ID+")"},
+						 new String[] {"COUNT(" + COL_COLOR_ID + ")"},
 						 whereClause,
 						 new String[] {String.valueOf(argb)},
 						 COL_COLOR_ARGB,
 						 null,
 						 null);
-		cur.moveToFirst();
-		int rowCount = cur.getInt(0);
-		return rowCount > 0;
+		
+		boolean result = cur.moveToFirst();
+		if (result) {
+			int rowCount = cur.getInt(0);
+			return rowCount > 0;
+		} else {
+			return false;
+		}
 	}
 	
 	public int deleteColor(int colorId) {

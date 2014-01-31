@@ -1,11 +1,12 @@
 package com.jamasan.eyedropper;
 
+import java.net.URI;
+
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,10 +34,6 @@ public class PickerFragment extends Fragment {
 
 	static private final double MAX_BITMAP_SIZE = 4096.0;
 	
-	public PickerFragment() { 
-		setRetainInstance(true);
-	}
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.picker_fragment, container, false);
@@ -48,39 +45,30 @@ public class PickerFragment extends Fragment {
 		mImageMain = (ImageView)getActivity().findViewById(R.id.image_main);
 		mAttacher = new PhotoViewAttacher(mImageMain);
 		mAttacher.setOnPhotoTapListener(new PhotoTapListener());
-		if (mHUD == null) {
-			mHUD = new HUD(getActivity());
+		mHUD = new HUD(getActivity());
+		Bundle args = getArguments();
+		if (args != null) {
+			if (args.containsKey("image_resource")) {
+				setImageToResource(args.getInt("image_resource"));
+			} else if (args.containsKey("image_uri")) {
+				URI javaUri = (URI)args.get("image_uri");
+				Uri androidUri = Uri.parse(javaUri.toString());
+				showImageURI(androidUri);
+			}
 		}
 	}
 	
 	@Override
 	public void onDestroyView() {
 		mAttacher.cleanup();
+		mHUD = null;
+		mImageMain = null;
+		mAttacher = null;
 		super.onDestroyView();
 	}
 	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	super.onActivityResult(requestCode, resultCode, data);
-    	
-    	switch(requestCode) {
-        case REQUEST_IMAGE_LOAD:
-            if(resultCode == Activity.RESULT_OK){  
-                Uri uri = data.getData();
-                this.showImageURI(uri);
-            }
-            return;
-        case REQUEST_IMAGE_CAPTURE:
-        	if(resultCode == Activity.RESULT_OK) {
-        		Uri uri = data.getData();
-        		this.grabImage(uri);
-                mAttacher.update();
-            }
-        }
-	}
-	
 	public void showImageURI(Uri uri) {
-		String[] filePathColumn = {MediaStore.Images.Media.DATA};
+		String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
         ContentResolver resolver = getActivity().getContentResolver();
         Cursor cursor;
@@ -124,11 +112,15 @@ public class PickerFragment extends Fragment {
         }
     }
     
-    public void setImageToSpectrum() {
-    	mDrawable = getResources().getDrawable(R.drawable.spectrum_circular);
+    public void setImageToResource(int res) {
+    	mDrawable = getResources().getDrawable(res);
     	mImageMain.setImageDrawable(mDrawable);
     	mAttacher.update();
     	mHUD.reset();
+    }
+    
+    public void setImageToSpectrum() {
+    	setImageToResource(R.drawable.spectrum_circular);
     }
     
     private void updateColorReadout(ColorPoint color) {

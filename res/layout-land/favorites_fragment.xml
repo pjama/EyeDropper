@@ -10,19 +10,34 @@
 	    android:layout_height="match_parent"
 	    android:orientation="vertical" >
 	    
-	    <TextView
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:padding="10dip"
-	        android:background="@color/color_detail_dark_gray_bg"
-	        android:textColor="@color/color_detail_light_text"
-	        android:textSize="24sp"
-	        android:text="@string/favorites" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_detail_dark_gray_bg" >
+	    	
+        	<ImageView
+	       	    android:layout_width="25dp"
+	       	    android:layout_height="25dp"
+	       	    android:layout_gravity="center_vertical"
+        	    android:background="@drawable/ic_navigation_drawer" />
 	    
+		    <TextView
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:padding="10dip"
+		        android:layout_marginLeft="20dip"
+		        android:layout_gravity="center_vertical"
+		        android:textColor="@color/color_detail_light_text"
+		        android:textSize="24sp"
+		        android:text="@string/favorites" />
+	    
+	    </FrameLayout>
+		    
 	    <ListView 
 	       android:id="@+id/favorites_list"
 	       android:layout_height="match_parent"
-	       android:layout_width="match_parent" />
+	       android:layout_width="match_parent"
+	       android:padding="5dip" />
 	       
     </LinearLayout>
     

@@ -19,7 +19,6 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:padding="10dp"
-        android:text="Medium Text"
         android:textSize="16sp" />
 
 </LinearLayout>

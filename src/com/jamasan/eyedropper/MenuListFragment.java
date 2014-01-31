@@ -64,6 +64,7 @@ public class MenuListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
 		ImageFetcher parent = (ImageFetcher)getActivity();
+		parent.clearFragmentStack();
 		switch (position) {
 		case 0:
 			parent.startGalleryIntent();

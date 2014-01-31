@@ -3,8 +3,6 @@ package com.jamasan.eyedropper;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -79,12 +77,7 @@ public class HUD {
 			DetailFragment fragment = new DetailFragment();
 			fragment.setArguments(color.toBundle());
 			
-			FragmentManager manager = mActivity.getFragmentManager();
-			FragmentTransaction transaction = manager.beginTransaction();
-			transaction.add(R.id.main_fragment, fragment);
-			transaction.addToBackStack(null);
-			transaction.commit();
-			mActivity.setDetailedView(fragment);
+			mActivity.setActiveFragment(fragment);
 		}
 	};
 }

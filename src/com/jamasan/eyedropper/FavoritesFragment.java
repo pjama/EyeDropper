@@ -3,8 +3,6 @@ package com.jamasan.eyedropper;
 import java.util.ArrayList;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,11 +71,7 @@ public class FavoritesFragment extends Fragment {
 			DetailFragment fragment = new DetailFragment();
 			fragment.setArguments(color.toBundle());
 			
-			FragmentManager manager = getActivity().getFragmentManager();
-			FragmentTransaction transaction = manager.beginTransaction();
-			transaction.replace(R.id.main_fragment, fragment);
-			transaction.commit();
-			((FullscreenActivity)getActivity()).setDetailedView(fragment);
+			((FullscreenActivity)getActivity()).setActiveFragment(fragment);
 		}
 	};
 	

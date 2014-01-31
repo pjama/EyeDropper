@@ -1,8 +1,12 @@
 package com.jamasan.eyedropper;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Stack;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -17,20 +21,14 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	static final int REQUEST_IMAGE_CAPTURE = 1001;
 	static final int REQUEST_IMAGE_LOAD = 1002;
 	
-	private PickerFragment mPickerFragment;
-	private DetailFragment mDetailFragment;
-	private Uri mImageUri;
+	private URI mImageUri;
+	
+	private Stack<Fragment> mFragments;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fullscreen);
-		mPickerFragment = new PickerFragment();
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.replace(R.id.main_fragment, mPickerFragment);
-		transaction.addToBackStack(null);
-		transaction.commit();
 	}
 	
 	@Override
@@ -41,13 +39,11 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	
 	@Override
 	public void onBackPressed() {
-	    FragmentManager fm = getFragmentManager();
-	    if (mDetailFragment != null && mDetailFragment.isAdded()) {
-	    	FragmentTransaction transaction = fm.beginTransaction();
-	    	transaction.remove(mDetailFragment);
-	    	transaction.commit();
+		if (mFragments == null) mFragments = new Stack<Fragment>();
+		if (mFragments.empty()) {
+	    	super.onBackPressed();
 	    } else {
-	        super.onBackPressed();  
+	    	popFragment();  
 	    }
 	}
 	
@@ -57,15 +53,66 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
     	switch(requestCode) {
         case REQUEST_IMAGE_LOAD:
             if(resultCode == Activity.RESULT_OK){  
-                Uri uri = data.getData();
-                mPickerFragment.showImageURI(uri);
+            	Uri uri = data.getData();
+            	Bundle args = new Bundle();
+        		try {
+					args.putSerializable("image_uri", new URI(uri.toString()));
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+        		Fragment fragment = new PickerFragment(); 
+        		fragment.setArguments(args);
+        		setActiveFragment(fragment);
             }
             return;
         case REQUEST_IMAGE_CAPTURE:
         	if(resultCode == Activity.RESULT_OK) {
-        		mPickerFragment.grabImage(mImageUri);
+        		Bundle args = new Bundle();
+        		args.putSerializable("image_uri", mImageUri);
+        		Fragment fragment = new PickerFragment(); 
+        		fragment.setArguments(args);
+        		setActiveFragment(fragment);
             }
         }
+	}
+	
+	public Fragment getActiveFragment() {
+		return mFragments.peek();
+	}
+	
+	public void setActiveFragment(Fragment fragment) {
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.replace(R.id.main_fragment, fragment);
+		transaction.commit();
+		
+		if (mFragments == null) mFragments = new Stack<Fragment>();
+		mFragments.add(fragment);
+	}
+	
+	public void clearFragmentStack() {
+		if (mFragments == null || mFragments.empty())  return;
+		FragmentManager manager = getFragmentManager();
+		while (!mFragments.empty()) {
+			FragmentTransaction transaction = manager.beginTransaction();
+			Fragment fragment = mFragments.pop();
+			transaction.remove(fragment).commit();
+		}
+	}
+	
+	private Fragment popFragment() {
+		if (mFragments == null || mFragments.empty()) return null;
+
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		Fragment fragment = mFragments.pop();
+		transaction.remove(fragment);
+		
+		if (!mFragments.empty()) {
+			transaction.replace(R.id.main_fragment, mFragments.peek());
+		}
+		transaction.commit();
+		return fragment;
 	}
 	
 	public void startGalleryIntent() {
@@ -73,8 +120,6 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 		intent.setType("image/*");
 		startActivityForResult(intent, REQUEST_IMAGE_LOAD);
 		getSlidingMenu().showContent();
-		hideDetailedView();
-		showPickerFragment();
 	}
 	
 	public void startCameraIntent() {
@@ -87,38 +132,34 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
         	Log.e("CaptureImage", "Can't create file to take picture!");
         	return;
         }
-        mImageUri = Uri.fromFile(photo);
+        try {
+			mImageUri = new URI(Uri.fromFile(photo).toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
         getSlidingMenu().showContent();
-        hideDetailedView();
-        showPickerFragment();
+        setActiveFragment(new PickerFragment());
 	}
 	
 	public void setImageToSpectrum() {
 		getSlidingMenu().showContent();
-		hideDetailedView();
-		showPickerFragment();
-		mPickerFragment.setImageToSpectrum();
+		Fragment fragment = new PickerFragment();
+		Bundle args = new Bundle();
+		args.putInt("image_resource", R.drawable.spectrum_circular);
+		fragment.setArguments(args);
+		setActiveFragment(fragment);
 	}
 	
 	public void showFavorites() {
 		getSlidingMenu().showContent();
-		FavoritesFragment fragment = new FavoritesFragment();
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.replace(R.id.main_fragment, fragment);
-		transaction.commit();
+		setActiveFragment(new FavoritesFragment());
 	}
 	
 	public void showCalculator() {
 		getSlidingMenu().showContent();
-		DetailFragment fragment = new DetailFragment();
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.replace(R.id.main_fragment, fragment);
-		transaction.commit();
-		this.setDetailedView(fragment);
+		setActiveFragment(new DetailFragment());
 	}
 	
 	private File createTemporaryFile(String part, String ext) throws Exception {
@@ -129,25 +170,4 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
         }
         return File.createTempFile(part, ext, tempDir);
     }
-	
-	private void showPickerFragment() {
-		mPickerFragment = new PickerFragment();
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.replace(R.id.main_fragment, mPickerFragment);
-		transaction.commit();	
-	}
-	
-	public void setDetailedView(DetailFragment detailFragment) {
-		mDetailFragment = detailFragment;
-	}
-	
-	public void hideDetailedView() {
-		if (mDetailFragment != null && mDetailFragment.isAdded()) {
-			FragmentManager manager = getFragmentManager();
-			FragmentTransaction transaction = manager.beginTransaction();
-			transaction.remove(mDetailFragment);
-			transaction.commit();
-		}
-	}
 }

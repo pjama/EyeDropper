@@ -50,7 +50,9 @@ public class FavoritesFragment extends Fragment {
 		} else {
 			textNoFavorites.setVisibility(View.GONE);
 			for(ColorSample color : colors) {
-				mListRowItems.add(new CustomListItem(color));
+				CustomListItem item = new CustomListItem(color);
+				item.setDescription(color.getDateCapturedString());
+				mListRowItems.add(item);
 			}
 			((CustomAdapter)mListFavorites.getAdapter()).notifyDataSetChanged();
 		}

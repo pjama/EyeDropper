@@ -28,6 +28,7 @@ public class SQLiteManager {
 	private static final String TABLE_COLORS = "tbl_colors";
 	private static final String COL_COLOR_ID = "id";
 	private static final String COL_COLOR_ARGB = "argb";
+	private static final String COL_COLOR_NAME = "name";
 	private static final String COL_COLOR_DATE_CREATED = "date_created";
 	private static final String COL_COLOR_SOURCE = "source";
 	
@@ -38,6 +39,7 @@ public class SQLiteManager {
     	"CREATE TABLE IF NOT EXISTS " + TABLE_COLORS + " (" + 
     	COL_COLOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     	COL_COLOR_ARGB + " INT, " +
+    	COL_COLOR_NAME + " TEXT, " +
     	COL_COLOR_SOURCE + " TEXT, " +
     	COL_COLOR_DATE_CREATED + " TEXT);";
 		
@@ -61,17 +63,15 @@ public class SQLiteManager {
 	
 	public long saveColor(ColorPoint color) {
 		
-		if(color == null)
-			return -1;
+		if(color == null) return -1;
 		reset();
 		ContentValues values = new ContentValues();
 		
-		String strDate;
 		Calendar c = Calendar.getInstance();
-		strDate = String.valueOf(DateFormat.format(DATE_FORMAT, c.getTime()));
-		values.put(COL_COLOR_DATE_CREATED, strDate);
+		CharSequence date = DateFormat.format(DATE_FORMAT, c.getTime());
+		values.put(COL_COLOR_DATE_CREATED, String.valueOf(date));
+		values.put(COL_COLOR_NAME, color.getName());
 		values.put(COL_COLOR_ARGB, color.getARGB());
-		
 		return mDb.replace(TABLE_COLORS, null, values);
 	}
 	
@@ -81,17 +81,17 @@ public class SQLiteManager {
 	
 	
 	public ArrayList<ColorSample> getColors(String having, String selection, String groupby) {
-		
 		ArrayList<ColorSample> colors = new ArrayList<ColorSample>();
 		mDb.beginTransaction();
 		Cursor cur = null;
-		
+		String[] cols = new String[] {COL_COLOR_ID, COL_COLOR_ARGB, 
+									  COL_COLOR_NAME, COL_COLOR_DATE_CREATED,
+									  COL_COLOR_SOURCE};
 		try {
 			String orderby = COL_COLOR_DATE_CREATED + " DESC";
-			
 			cur = mDb.query(
 					TABLE_COLORS,
-					new String[] {COL_COLOR_ID, COL_COLOR_ARGB, COL_COLOR_DATE_CREATED, COL_COLOR_SOURCE},
+					cols,
 					selection,
 					null,
 					groupby,
@@ -103,26 +103,29 @@ public class SQLiteManager {
 			
 			int id = -1;
 			int argb = -1;
+			String name = "";
 			Date dateCreated = null;
 			String source = null;
 			
 			while (!cur.isAfterLast()) {
-				SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+				SimpleDateFormat formatter;
+				formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 				
 				id = cur.getInt(0);
 				argb = cur.getInt(1);
-				dateCreated = (Date)formatter.parse(cur.getString(2));
+				name = cur.getString(2);
+				dateCreated = (Date)formatter.parse(cur.getString(3));
 				source = cur.getString(3);
 				
 				ColorSample color = new ColorSample(argb);
 				color.setId(id);
+				color.setName(name);
 				color.setDate(dateCreated);
 				color.setSource(source);
 				
 				colors.add(color);
 				cur.moveToNext();
 			}
-			
 			mDb.setTransactionSuccessful();
 			
 		} catch (Exception e) {

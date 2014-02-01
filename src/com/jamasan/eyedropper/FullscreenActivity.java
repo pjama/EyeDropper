@@ -162,6 +162,10 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 		setActiveFragment(new DetailFragment());
 	}
 	
+	public void showDrawerMenu(boolean animate) {
+		getSlidingMenu().showMenu(animate);
+	}
+	
 	private File createTemporaryFile(String part, String ext) throws Exception {
         File tempDir= Environment.getExternalStorageDirectory();
         tempDir = new File(tempDir.getAbsolutePath() + "/.temp/");

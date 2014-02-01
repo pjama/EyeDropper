@@ -18,6 +18,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -46,6 +47,8 @@ public class PickerFragment extends Fragment {
 		mAttacher = new PhotoViewAttacher(mImageMain);
 		mAttacher.setOnPhotoTapListener(new PhotoTapListener());
 		mHUD = new HUD(getActivity());
+		ImageView drawerNavIcon = (ImageView)getActivity().findViewById(R.id.picker_nav_drawer_icon);
+		drawerNavIcon.setOnClickListener(listener);
 		Bundle args = getArguments();
 		if (args != null) {
 			if (args.containsKey("image_resource")) {
@@ -128,6 +131,20 @@ public class PickerFragment extends Fragment {
 		mHUD.updateColors();
 	}
     
+    OnClickListener listener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.picker_nav_drawer_icon:
+				((FullscreenActivity)getActivity()).showDrawerMenu(true);
+				break;
+			default:
+				break;
+			}
+			
+		}
+	};
     private class PhotoTapListener implements OnPhotoTapListener {
 
         @Override

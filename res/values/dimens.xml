@@ -20,7 +20,7 @@
     <dimen name="list_padding">10dp</dimen>
     <dimen name="shadow_width">15dp</dimen>
 	<dimen name="color_editor_seeker_width">250dip</dimen>
-	<dimen name="color_editor_seeker_padding">10dip</dimen>
+	<dimen name="color_editor_seeker_padding">12dip</dimen>
 	<dimen name="color_editor_seeker_labal_padding">10dip</dimen>
 	<dimen name="title_text_size">20sp</dimen>
 	<dimen name="nav_home_icon_size">96dip</dimen>

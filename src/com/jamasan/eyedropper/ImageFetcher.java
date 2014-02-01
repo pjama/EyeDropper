@@ -8,6 +8,7 @@ public interface ImageFetcher {
 	public void setImageToSpectrum();
 	public void showFavorites();
 	public void showCalculator();
+	public void showDrawerMenu(boolean animate);
 	public Fragment getActiveFragment();
 	public void setActiveFragment(Fragment fragment);
 	public void clearFragmentStack();

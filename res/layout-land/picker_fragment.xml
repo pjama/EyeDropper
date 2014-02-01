@@ -31,13 +31,15 @@
 		        <FrameLayout 
 		            android:background="#333"
 		            android:layout_width="match_parent"
-		            android:layout_height="40dp" >
+		            android:layout_height="50dp" >
 		        	
-		        	<ImageView 
-		        	    android:layout_width="20dp"
-		        	    android:layout_height="20dp"
+		        	<ImageView
+		        	    android:id="@+id/picker_nav_drawer_icon"
+		        	    android:layout_width="25dp"
+		        	    android:layout_height="25dp"
 		        	    android:background="@drawable/ic_navigation_drawer"
-		        	    android:layout_gravity="left|center_vertical" />
+		        	    android:layout_gravity="left|center_vertical"
+		        	    android:clickable="true" />
 		        	
 		        </FrameLayout>
 		        

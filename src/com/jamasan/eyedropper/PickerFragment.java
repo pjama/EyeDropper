@@ -28,6 +28,7 @@ public class PickerFragment extends Fragment {
 	private ImageView mImageMain;
 	private HUD mHUD;
 	private Drawable mDrawable;
+	private ColorPoint mColor;
 	
 	static final int REQUEST_IMAGE_CAPTURE = 1001;
 	static final int REQUEST_IMAGE_LOAD = 1002;
@@ -57,7 +58,14 @@ public class PickerFragment extends Fragment {
 				URI javaUri = (URI)args.get("image_uri");
 				Uri androidUri = Uri.parse(javaUri.toString());
 				showImageURI(androidUri);
+			} else if (args.containsKey("image_capture_uri")) {
+				URI javaUri = (URI)args.get("image_capture_uri");
+				Uri androidUri = Uri.parse(javaUri.toString());
+				grabImage(androidUri);
 			}
+		}
+		if (mColor != null) {
+			updateColorReadout(mColor);
 		}
 	}
 	
@@ -92,7 +100,6 @@ public class PickerFragment extends Fragment {
     	Activity activity = getActivity();
         ContentResolver cr = activity.getContentResolver();
         cr.notifyChange(uri, null);
-        
         try {
         	Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, uri);
             mImageMain.setImageBitmap(getScaledBitmap(bitmap));
@@ -155,8 +162,8 @@ public class PickerFragment extends Fragment {
 			int posX = (int)(bitmap.getWidth() * x);
 			int posY = (int)(bitmap.getHeight() * y);
 			int pixelColor = bitmap.getPixel(posX, posY);
-			ColorPoint color = new ColorPoint(pixelColor);
-        	updateColorReadout(color);
+			mColor = new ColorPoint(pixelColor);
+			updateColorReadout(mColor);
         }
     };
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -13,12 +14,14 @@ import android.widget.TextView;
 public class CustomAdapter extends ArrayAdapter<CustomListItem> {
 
 	private Context mContext;
+	private int mLayoutResource;
 	private ArrayList<CustomListItem> mItems;
+	protected OnClickListener mOnClickDelete = null;
 	
-	public CustomAdapter(Context context, int textViewResourceId, ArrayList<CustomListItem> objects) {
-		super(context, textViewResourceId, objects);
-		
+	public CustomAdapter(Context context, int layoutResourceId, ArrayList<CustomListItem> objects) {
+		super(context, layoutResourceId, objects);
 		mContext = context;
+		mLayoutResource = layoutResourceId;
 		mItems = objects;
 	}
 	
@@ -28,7 +31,7 @@ public class CustomAdapter extends ArrayAdapter<CustomListItem> {
 		
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.row_custom, null);
+            v = vi.inflate(mLayoutResource, null);
         } else {
         	v = convertView;
         }
@@ -54,6 +57,13 @@ public class CustomAdapter extends ArrayAdapter<CustomListItem> {
         		params.height = Utils.getDip(mContext, item.getIconSize());
         		params.width = Utils.getDip(mContext, item.getIconSize());
         		tImage.setLayoutParams(params);
+        	}
+        	
+        	// RowFavorite
+        	ImageView imDelete = (ImageView)v.findViewById(R.id.favorite_delete);
+        	if(imDelete != null && mOnClickDelete != null) {
+        		imDelete.setOnClickListener(mOnClickDelete);
+        		imDelete.setTag(item.getColorId());
         	}
         }
         return v;

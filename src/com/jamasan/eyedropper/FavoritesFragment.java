@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -18,7 +19,7 @@ public class FavoritesFragment extends Fragment {
 	private ListView mListFavorites;
 	private SQLiteManager mSQL; 
 	
-	private CustomAdapter mCustomAdapter;
+	private CustomAdapter mAdapter;
 	private ArrayList<CustomListItem> mListRowItems;
 	
 	
@@ -31,21 +32,21 @@ public class FavoritesFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		mListFavorites = (ListView)getActivity().findViewById(R.id.favorites_list);
 		mListRowItems = new ArrayList<CustomListItem>();
-		mCustomAdapter = new CustomAdapter(getActivity(), R.layout.row_custom, mListRowItems);
-		mListFavorites.setAdapter(mCustomAdapter);
+		mAdapter = new FavoriteListAdapter(getActivity(), R.layout.row_favorite, mListRowItems, onClickDelete);
+		mListFavorites.setAdapter(mAdapter);
 		mListFavorites.setOnItemClickListener(onItemClickListener);
-		mListFavorites.setOnItemLongClickListener(onItemLongClickListener);
+		//mListFavorites.setOnItemLongClickListener(onItemLongClickListener);
 		listFavorites();
 	}
 	
 	private void listFavorites() {
-		if(mSQL == null) {
+		if (mSQL == null) {
 			mSQL = new SQLiteManager(getActivity());
 		}
+		mListRowItems.clear();
 		ArrayList<ColorSample> colors = mSQL.getColors();
-		
 		TextView textNoFavorites = (TextView)getActivity().findViewById(R.id.favorites_unavailable);
-		if(colors.isEmpty()) {
+		if (colors.isEmpty()) {
 			textNoFavorites.setVisibility(View.VISIBLE);
 		} else {
 			textNoFavorites.setVisibility(View.GONE);
@@ -63,7 +64,6 @@ public class FavoritesFragment extends Fragment {
 	}
 	
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
-
 		@Override
 		public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
 			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();
@@ -74,6 +74,15 @@ public class FavoritesFragment extends Fragment {
 			fragment.setArguments(color.toBundle());
 			
 			((FullscreenActivity)getActivity()).setActiveFragment(fragment);
+		}
+	};
+	
+	OnClickListener onClickDelete = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Integer favoriteId = (Integer)v.getTag();
+			deleteFavorite(favoriteId);
+			listFavorites();
 		}
 	};
 	

@@ -10,6 +10,31 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 	    
+        <!-- Title Bar -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_detail_dark_gray_bg" >
+	    	
+        	<ImageView
+	       	    android:layout_width="25dp"
+	       	    android:layout_height="25dp"
+	       	    android:layout_gravity="center_vertical"
+        	    android:background="@drawable/ic_navigation_drawer" />
+	    
+		    <TextView 
+	            android:id="@+id/color_detail_title"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="left|center_vertical"
+	            android:textSize="24sp"
+	            android:textColor="#FFF"
+	            android:padding="5dip"
+	            android:layout_marginLeft="20dip" />
+	    
+	    </FrameLayout>
+	    
+        <!-- Color Details -->
 	    <FrameLayout
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content" >
@@ -21,15 +46,6 @@
 		        android:layout_margin="10dip"
 		        android:background="#F00"/>
 	        
-	        <TextView 
-	            android:id="@+id/color_detail_title"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:textSize="24sp"
-	            android:textColor="#FFF"
-	            android:paddingLeft="120dip"
-	            android:paddingTop="10dip" />
-	        
 	        <ImageView
 	            android:id="@+id/color_detail_favorite"
 	            android:layout_width="32dip"
@@ -40,6 +56,7 @@
 	        
 	    </FrameLayout>
 	    
+	    <!-- Color Details -->
 	    <LinearLayout 
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
@@ -130,6 +147,7 @@
 	    
     </LinearLayout>
 	
+    <!-- Related Color Matches -->
     <LinearLayout
         android:layout_width="250dip"
         android:layout_height="match_parent"

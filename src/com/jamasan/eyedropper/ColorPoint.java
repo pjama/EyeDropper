@@ -46,7 +46,9 @@ public class ColorPoint {
 		int rw = 51 * ((r+25)/51);
 		int gw = 51 * ((g+25)/51);
 		int bw = 51 * ((b+25)/51);
-		ColorPoint colorWebSafe = new ColorPoint(rw, gw, bw, "Web-Safe RGB");
+		ColorPoint colorWebSafe = new ColorPoint(rw, gw, bw, null);
+		colorWebSafe.setName("WebSafe #" + colorWebSafe.getHex());
+		colorWebSafe.setDescription("R:" + rw + " G:" + gw + " B:" + bw);
 		return colorWebSafe; 
 	}
 	

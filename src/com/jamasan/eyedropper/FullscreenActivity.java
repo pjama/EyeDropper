@@ -16,6 +16,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 
 public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	static final int REQUEST_IMAGE_CAPTURE = 1001;
@@ -29,6 +32,17 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fullscreen);
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		// Initialize Home Navigation icons
+		((ImageView)findViewById(R.id.nav_home_camera)).setOnClickListener(listener);
+		((ImageView)findViewById(R.id.nav_home_editor)).setOnClickListener(listener);
+		((ImageView)findViewById(R.id.nav_home_favorites)).setOnClickListener(listener);
+		((ImageView)findViewById(R.id.nav_home_gallery)).setOnClickListener(listener);
+		((ImageView)findViewById(R.id.nav_home_spectrum)).setOnClickListener(listener);
 	}
 	
 	@Override
@@ -48,9 +62,9 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	}
 	
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	super.onActivityResult(requestCode, resultCode, data);
-    	switch(requestCode) {
+	public void onActivityResult(int reqCode, int resultCode, Intent data) {
+    	super.onActivityResult(reqCode, resultCode, data);
+    	switch(reqCode) {
         case REQUEST_IMAGE_LOAD:
             if(resultCode == Activity.RESULT_OK){  
             	Uri uri = data.getData();
@@ -68,7 +82,7 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
         case REQUEST_IMAGE_CAPTURE:
         	if(resultCode == Activity.RESULT_OK) {
         		Bundle args = new Bundle();
-        		args.putSerializable("image_uri", mImageUri);
+        		args.putSerializable("image_capture_uri", mImageUri);
         		Fragment fragment = new PickerFragment(); 
         		fragment.setArguments(args);
         		setActiveFragment(fragment);
@@ -140,10 +154,9 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
         getSlidingMenu().showContent();
-        setActiveFragment(new PickerFragment());
 	}
 	
-	public void setImageToSpectrum() {
+	public void showSpectrum() {
 		getSlidingMenu().showContent();
 		Fragment fragment = new PickerFragment();
 		Bundle args = new Bundle();
@@ -151,15 +164,21 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 		fragment.setArguments(args);
 		setActiveFragment(fragment);
 	}
-	
+		
 	public void showFavorites() {
 		getSlidingMenu().showContent();
 		setActiveFragment(new FavoritesFragment());
 	}
 	
-	public void showCalculator() {
+	public void showEditor() {
 		getSlidingMenu().showContent();
-		setActiveFragment(new DetailFragment());
+		Bundle args = new Bundle();
+		ColorPoint color = new ColorPoint(255, 255, 255);
+		color.setName(getString(R.string.custom_color));
+		args.putAll(color.toBundle());
+		Fragment fragment = new DetailFragment();
+		fragment.setArguments(args);
+		setActiveFragment(fragment);
 	}
 	
 	public void showDrawerMenu(boolean animate) {
@@ -174,4 +193,30 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
         }
         return File.createTempFile(part, ext, tempDir);
     }
+	
+	OnClickListener listener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.nav_home_camera:
+				startCameraIntent();
+				break;
+			case R.id.nav_home_editor:
+				showEditor();
+				break;
+			case R.id.nav_home_favorites:
+				showFavorites();
+				break;
+			case R.id.nav_home_gallery:
+				startGalleryIntent();
+				break;
+			case R.id.nav_home_spectrum:
+				showSpectrum();
+				break;
+			default:
+				break;
+			}
+		}
+	}; 
 }

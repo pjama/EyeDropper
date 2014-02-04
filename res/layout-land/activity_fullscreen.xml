@@ -12,34 +12,45 @@
         android:orientation="horizontal" >
         
         <ImageView
+            android:id="@+id/nav_home_gallery"
             android:layout_width="@dimen/nav_home_icon_size"
             android:layout_height="@dimen/nav_home_icon_size"
+            android:src="@android:drawable/ic_menu_gallery"
             android:padding="@dimen/nav_home_icon_padding"
-            android:src="@android:drawable/ic_menu_gallery" />
+            android:clickable="true" />
         
         <ImageView
+            android:id="@+id/nav_home_camera"
             android:layout_width="@dimen/nav_home_icon_size"
             android:layout_height="@dimen/nav_home_icon_size"
+            android:src="@android:drawable/ic_menu_camera"
             android:padding="@dimen/nav_home_icon_padding"
-            android:src="@android:drawable/ic_menu_camera" />
+            android:clickable="true" />
         
         <ImageView
+            android:id="@+id/nav_home_spectrum"
             android:layout_width="@dimen/nav_home_icon_size"
             android:layout_height="@dimen/nav_home_icon_size"
+            android:src="@drawable/ic_menu_spectrum"
             android:padding="@dimen/nav_home_icon_padding"
-            android:src="@drawable/ic_menu_spectrum" />
+            android:clickable="true" />
         
         <ImageView
+            android:id="@+id/nav_home_favorites"
             android:layout_width="@dimen/nav_home_icon_size"
             android:layout_height="@dimen/nav_home_icon_size"
+            android:src="@android:drawable/star_big_off"
             android:padding="@dimen/nav_home_icon_padding"
-            android:src="@android:drawable/star_big_off" />
+            android:clickable="true" />
         
         <ImageView
+            android:id="@+id/nav_home_editor"
             android:layout_width="@dimen/nav_home_icon_size"
             android:layout_height="@dimen/nav_home_icon_size"
+            android:src="@android:drawable/ic_menu_edit"
             android:padding="@dimen/nav_home_icon_padding"
-            android:src="@android:drawable/ic_menu_edit" />
+            android:clickable="true" />
+        
     </LinearLayout>
     
     <FrameLayout 

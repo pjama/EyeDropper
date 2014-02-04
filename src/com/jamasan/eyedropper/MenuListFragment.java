@@ -73,13 +73,13 @@ public class MenuListFragment extends ListFragment {
 			parent.startCameraIntent();
 			break;
 		case 2:
-			parent.setImageToSpectrum();
+			parent.showSpectrum();
 			break;
 		case 3:
 			parent.showFavorites();
 			break;
 		case 4:
-			parent.showCalculator();
+			parent.showEditor();
 			break;
 		}
 	}

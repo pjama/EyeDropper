@@ -11,6 +11,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -87,6 +88,11 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
         		Fragment fragment = new PickerFragment(); 
         		fragment.setArguments(args);
         		setActiveFragment(fragment);
+        		
+        		//Update Gallery
+        		String[] mediaType = {"image/jpeg"};
+        		String[] paths = new String[] { mUri.getPath() };
+        		MediaScannerConnection.scanFile(this, paths, mediaType, null);
             }
         }
 	}
@@ -142,7 +148,7 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
     	String imgName = "Photo";
     	String ext = ".jpg";
     	
-    	File photo = createTemporaryFile(imgName, ext);
+    	File photo = createImageFile(imgName, ext);
     	photo.delete();
     
         try {
@@ -186,11 +192,10 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 		getSlidingMenu().showMenu(animate);
 	}
 	
-	private File createTemporaryFile(String part, String ext) {
+	private File createImageFile(String part, String ext) {
 		File dir = null;
 		try {
-			dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() 
-						+ "/" + getString(R.string.app_name) +"/");
+			dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/" + getString(R.string.app_name)).getPath());
 	        if (!dir.exists()) {
 	            dir.mkdir();
 	        }

@@ -13,7 +13,7 @@ public class ColorSample extends ColorPoint {
 	private Date mDateCaptured;
 	private String mSource;
 	
-	private static final String DATE_FORMAT = "yyyy-MM-dd kk:mm";
+	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	
 	public ColorSample(int argb) {
 		super(argb | (0xFF << 24));
@@ -40,7 +40,7 @@ public class ColorSample extends ColorPoint {
 		} else {
 			try {
 				SimpleDateFormat formatter;
-				formatter = new SimpleDateFormat(SQLiteManager.DATE_FORMAT, Locale.ENGLISH);
+				formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 				date = formatter.parse(strDate);
 				this.mDateCaptured = date;
 			} catch (ParseException e) {
@@ -66,7 +66,11 @@ public class ColorSample extends ColorPoint {
 	public String getDateCapturedString() {
 		String dateFormat = DATE_FORMAT;
 		SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
-		return formatter.format(mDateCaptured);
+		if (mDateCaptured == null) {
+			return formatter.format(Calendar.getInstance().getTime());
+		} else {
+			return formatter.format(mDateCaptured);
+		}
 	}
 	
 	public ColorSample setDate(Date date) {
@@ -86,6 +90,7 @@ public class ColorSample extends ColorPoint {
 	public Bundle toBundle() {
 		Bundle bundle = super.toBundle();
 		bundle.putLong("color_id", this.getId());
+		bundle.putString("date_captured", this.getDateCapturedString());
 		bundle.putString("source", this.getSource());
 		return bundle;
 	}

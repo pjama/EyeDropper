@@ -32,7 +32,7 @@ public class SQLiteManager {
 	private static final String COL_COLOR_DATE_CREATED = "date_created";
 	private static final String COL_COLOR_SOURCE = "source";
 	
-	public static final String DATE_FORMAT = "yyyy-MM-dd kk:mm:ss";
+	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	
 	// Awards Table setup
 	final static String CREATE_TABLE_COLORS  =

@@ -89,10 +89,8 @@ public class SQLiteManager {
 									  COL_COLOR_SOURCE};
 		try {
 			String orderBy = COL_COLOR_DATE_CREATED + " DESC";
-			cur = mDb.query(TABLE_COLORS, cols,	selection, null,
+			cur = mDb.query(TABLE_COLORS, cols,	selection, selectionArgs,
 							groupBy, having, orderBy);
-			
-			cur.moveToPosition(0);
 			cur.moveToFirst();
 			
 			long id = -1;
@@ -109,7 +107,7 @@ public class SQLiteManager {
 				argb = cur.getInt(1);
 				name = cur.getString(2);
 				dateCreated = (Date)formatter.parse(cur.getString(3));
-				source = cur.getString(3);
+				source = cur.getString(4);
 				
 				ColorSample color = new ColorSample(argb);
 				color.setId(id);

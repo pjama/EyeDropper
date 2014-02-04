@@ -16,6 +16,8 @@
 	<string name="color_editor">Colour Editor</string>
 	<string name="custom_color">Custom Colour</string>
 	<string name="favorites">Favourites</string>
+	<string name="date_captured">Captured</string>
+	<string name="source">Source</string>
 	<string name="no_favorites">No Favourites Yet.</string>
 	<string name="descrip_menu_gallery">Gallery icon in main menu</string>
 	<string name="descrip_menu_camera">Camera icon in main menu</string>

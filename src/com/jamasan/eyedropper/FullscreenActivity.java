@@ -25,6 +25,7 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	static final int REQUEST_IMAGE_LOAD = 1002;
 	
 	private URI mImageUri;
+	private Uri mUri;
 	
 	private Stack<Fragment> mFragments;
 	
@@ -138,20 +139,19 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	
 	public void startCameraIntent() {
 		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-		File photo;
-        try {
-        	photo = this.createTemporaryFile("picture", ".jpg");
-        	photo.delete();
-        } catch(Exception e) {
-        	Log.e("CaptureImage", "Can't create file to take picture!");
-        	return;
-        }
+    	String imgName = "Photo";
+    	String ext = ".jpg";
+    	
+    	File photo = createTemporaryFile(imgName, ext);
+    	photo.delete();
+    
         try {
 			mImageUri = new URI(Uri.fromFile(photo).toString());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        mUri = Uri.fromFile(photo);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
         getSlidingMenu().showContent();
 	}
@@ -173,8 +173,9 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 	public void showEditor() {
 		getSlidingMenu().showContent();
 		Bundle args = new Bundle();
-		ColorPoint color = new ColorPoint(255, 255, 255);
+		ColorSample color = new ColorSample(255, 255, 255);
 		color.setName(getString(R.string.custom_color));
+		color.setSource(getString(R.string.color_editor));
 		args.putAll(color.toBundle());
 		Fragment fragment = new DetailFragment();
 		fragment.setArguments(args);
@@ -185,13 +186,19 @@ public class FullscreenActivity extends BaseActivity implements ImageFetcher {
 		getSlidingMenu().showMenu(animate);
 	}
 	
-	private File createTemporaryFile(String part, String ext) throws Exception {
-        File tempDir= Environment.getExternalStorageDirectory();
-        tempDir = new File(tempDir.getAbsolutePath() + "/.temp/");
-        if (!tempDir.exists()) {
-            tempDir.mkdir();
-        }
-        return File.createTempFile(part, ext, tempDir);
+	private File createTemporaryFile(String part, String ext) {
+		File dir = null;
+		try {
+			dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() 
+						+ "/" + getString(R.string.app_name) +"/");
+	        if (!dir.exists()) {
+	            dir.mkdir();
+	        }
+	        return File.createTempFile(part, ext, dir);
+		} catch (Exception e) {
+			Log.e("CreateFile", "Cannot create file: " + (dir.getAbsolutePath() == null ? "" : dir.getAbsolutePath()));
+			return null;
+		}
     }
 	
 	OnClickListener listener = new OnClickListener() {

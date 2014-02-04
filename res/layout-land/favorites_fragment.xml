@@ -37,8 +37,7 @@
 	       android:id="@+id/favorites_list"
 	       android:layout_height="match_parent"
 	       android:layout_width="match_parent"
-	       android:padding="5dip"
-	       android:layout_marginLeft="10dip" />
+	       android:padding="5dip" />
 	       
     </LinearLayout>
     

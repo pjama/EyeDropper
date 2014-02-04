@@ -34,6 +34,8 @@ public class PickerFragment extends Fragment {
 	private HUD mHUD;
 	private Drawable mDrawable;
 	private ColorPoint mColor;
+	private ColorSource mSource;
+	private Uri mImageUri; 
 	
 	static final int REQUEST_IMAGE_CAPTURE = 1001;
 	static final int REQUEST_IMAGE_LOAD = 1002;
@@ -52,21 +54,23 @@ public class PickerFragment extends Fragment {
 		mImageMain = (ImageView)getActivity().findViewById(R.id.image_main);
 		mAttacher = new PhotoViewAttacher(mImageMain);
 		mAttacher.setOnPhotoTapListener(new PhotoTapListener());
-		mHUD = new HUD(getActivity());
+		mHUD = new HUD(getActivity(), this);
 		ImageView drawerNavIcon = (ImageView)getActivity().findViewById(R.id.picker_nav_drawer_icon);
 		drawerNavIcon.setOnClickListener(listener);
 		Bundle args = getArguments();
 		if (args != null) {
 			if (args.containsKey("image_resource")) {
 				setImageToResource(args.getInt("image_resource"));
+				String spectrum = getActivity().getString(R.string.menu_spectrum);
+				mSource = new ColorSource(spectrum, null);
 			} else if (args.containsKey("image_uri")) {
 				URI javaUri = (URI)args.get("image_uri");
-				Uri androidUri = Uri.parse(javaUri.toString());
-				showImageURI(androidUri);
+				mImageUri = Uri.parse(javaUri.toString());
+				showImageURI(mImageUri);
 			} else if (args.containsKey("image_capture_uri")) {
 				URI javaUri = (URI)args.get("image_capture_uri");
-				Uri androidUri = Uri.parse(javaUri.toString());
-				loadImageFromMedia(androidUri);
+				mImageUri = Uri.parse(javaUri.toString());
+				loadImageFromMedia(mImageUri);
 			}
 		}
 		if (mColor != null) {
@@ -81,6 +85,10 @@ public class PickerFragment extends Fragment {
 		mImageMain = null;
 		mAttacher = null;
 		super.onDestroyView();
+	}
+	
+	public ColorSource getColorSource() {
+		return mSource;
 	}
 	
 	public void showImageURI(Uri uri) {
@@ -112,10 +120,10 @@ public class PickerFragment extends Fragment {
                 result = new File(cursor.getString(dataColumnIndex));
             }
             cursor.close();
-
         } else {
             result = downloadImage(imageUri);
         }
+        mSource = new ColorSource("Gallery", imageUri);
         return result;          
 	}
 	
@@ -133,7 +141,6 @@ public class PickerFragment extends Fragment {
 	    File f = new File(cacheDir, "downloaded_img");
 
 	    try {
-
 	        InputStream is = null;
 	        if (imageUri.toString().startsWith("content://com.google.android.gallery3d")) {
 	            is = getActivity().getContentResolver().openInputStream(imageUri);
@@ -162,6 +169,8 @@ public class PickerFragment extends Fragment {
         } catch (Exception e) {
             Log.d("GrabImage", "Failed to load", e);
         }
+        String source = getActivity().getString(R.string.menu_camera);
+        mSource = new ColorSource(source, uri);
         mHUD.reset();
     }
     
@@ -183,10 +192,6 @@ public class PickerFragment extends Fragment {
     	mImageMain.setImageDrawable(mDrawable);
     	mAttacher.update();
     	mHUD.reset();
-    }
-    
-    public void setImageToSpectrum() {
-    	setImageToResource(R.drawable.spectrum_circular);
     }
     
     private void updateColorReadout(ColorPoint color) {

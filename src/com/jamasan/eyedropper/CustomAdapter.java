@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class CustomAdapter extends ArrayAdapter<CustomListItem> {
@@ -43,8 +44,9 @@ public class CustomAdapter extends ArrayAdapter<CustomListItem> {
         	TextView tTitle = (TextView) v.findViewById(R.id.row_title);
         	TextView tDescription = (TextView) v.findViewById(R.id.row_description);
         	
+        	int color = item.getColor().getARGB();
         	if (tImage != null) {
-    			tImage.setBackgroundColor(item.getColor().getARGB());
+    			tImage.setBackgroundColor(color);
         	}
         	if (tTitle != null) {
         		tTitle.setText(item.getName());
@@ -64,6 +66,11 @@ public class CustomAdapter extends ArrayAdapter<CustomListItem> {
         	if(imDelete != null && mOnClickDelete != null) {
         		imDelete.setOnClickListener(mOnClickDelete);
         		imDelete.setTag(item.getColorId());
+        	}
+        	
+        	LinearLayout background = (LinearLayout)v.findViewById(R.id.row_favorite_background);
+        	if(background != null) {
+        		//background.setBackgroundColor((color&0xFFFFFF) | (0x1F<<24));
         	}
         }
         return v;

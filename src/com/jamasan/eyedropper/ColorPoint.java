@@ -93,6 +93,11 @@ public class ColorPoint {
 		return this;
 	}
 	
+	public ColorPoint setName(CharSequence name) {
+		this.mName = String.valueOf(name);
+		return this;
+	}
+	
 	public String getName() {
 		return this.mName;
 	}

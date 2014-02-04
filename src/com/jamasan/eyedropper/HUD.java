@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 public class HUD {
 	private FullscreenActivity mActivity;
+	private PickerFragment mPickerFragment;
 	private ListView mListColors;
 	private CustomAdapter mCustomAdapter;
 	private ArrayList<CustomListItem> mListRowItems;
@@ -20,8 +21,9 @@ public class HUD {
 	private ColorStandardBase mRAL;
 	private ColorStandardBase mPantone;
 	
-	public HUD(Activity activity) {
+	public HUD(Activity activity, PickerFragment picker) {
 		mActivity = (FullscreenActivity)activity;
+		mPickerFragment = picker;
 		mColors = new ArrayList<ColorPoint>();
 		mRAL = new ColorRAL(mActivity);
 		mPantone = new ColorPantone(mActivity);
@@ -44,6 +46,11 @@ public class HUD {
 	
 	public void setBaseColor(ColorPoint color) {
 		this.mBaseColor = color;
+	}
+	
+	public ColorSource getColorSource() {
+		ColorSource colorSource = mPickerFragment.getColorSource();
+		return colorSource;
 	}
 	
 	public void updateColors() {
@@ -72,7 +79,8 @@ public class HUD {
 		public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
 			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();
 			CustomListItem item = adapter.getItem(pos);
-			ColorPoint color = item.getColor();
+			ColorSample color = new ColorSample(item.getColor().toBundle());
+			color.setSource(mPickerFragment.getColorSource().getSourceType());
 			
 			DetailFragment fragment = new DetailFragment();
 			fragment.setArguments(color.toBundle());

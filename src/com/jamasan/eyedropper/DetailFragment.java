@@ -1,6 +1,7 @@
 package com.jamasan.eyedropper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -29,6 +30,9 @@ public class DetailFragment extends Fragment {
 	private SeekBar mSeekBarRed;
 	private SeekBar mSeekBarGreen;
 	private SeekBar mSeekBarBlue;
+	
+	private TextView mTextDateCaptured;
+	private TextView mTextSource;
 	
 	private ListView mRelatedColors;
 	private CustomAdapter mCustomAdapter;
@@ -67,6 +71,9 @@ public class DetailFragment extends Fragment {
 		mSeekBarGreen.setOnSeekBarChangeListener(onSeekBarChangeListener);
 		mSeekBarBlue.setOnSeekBarChangeListener(onSeekBarChangeListener);
 		
+		mTextDateCaptured = (TextView)getActivity().findViewById(R.id.color_detail_date);
+		mTextSource = (TextView)getActivity().findViewById(R.id.color_detail_source);
+		
 		mListRowItems = new ArrayList<CustomListItem>();
 		mRelatedColors = (ListView)getActivity().findViewById(R.id.list_related_colors);
 		mCustomAdapter = new CustomAdapter(getActivity(), R.layout.row_custom, mListRowItems);
@@ -85,12 +92,28 @@ public class DetailFragment extends Fragment {
 		mColorTitle.setText(mColor.getName());
 		setColorSwatch(mColor.getARGB());
 		
+		if (mColor.getDateCapturedString() != null) {
+			mTextDateCaptured.setText(
+					String.valueOf(getActivity().getText(R.string.date_captured))
+					+ ": " + mColor.getDateCapturedString());
+		} else {
+			mTextDateCaptured.setText("");
+		}
+		
+		if (mColor.getSource() != null) {
+			mTextSource.setText(
+					String.valueOf(getActivity().getText(R.string.source))
+					+ ": " + mColor.getSource());
+		} else {
+			mTextSource.setText("");
+		}
+		
 		mSeekBarRed.setProgress(mColor.getR());
 		mSeekBarGreen.setProgress(mColor.getG());
 		mSeekBarBlue.setProgress(mColor.getB());
 		
 		setFavoriteIcon();
-		updateRelatedColours();		
+		updateRelatedColours();
 	}
 	
 	private void setFavoriteIcon() {
@@ -103,7 +126,16 @@ public class DetailFragment extends Fragment {
 	
 	private boolean isFavorite(ColorSample color) {
 		Long colorId = color.getId();
-		return colorId >= 0;
+		if (colorId >= 0) {
+			return true;
+		} else {
+			ColorSample colorSample = mSQL.isColorSaved(color.getARGB());
+			if (colorSample == null || colorSample.getId() < 0) {
+				return false; 
+			} else {
+				return true;
+			}
+		}
 	}
 	
 	private ColorSample findFavorite(int argb) {
@@ -127,16 +159,18 @@ public class DetailFragment extends Fragment {
 		
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
+			mColor.setId(-1);
+			mColor.setSource(getActivity().getString(R.string.color_editor));
+			mColor.setDate(Calendar.getInstance().getTime());
+			setColorDetail(mColor);
 			updateRelatedColours();
 			setFavoriteIcon();
 		}
 		
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			String name;
-			name = String.valueOf(getActivity().getText(R.string.custom_color));
-			mColor.setName(name);
-			mColorTitle.setText(name);
+			mColor.setName(getActivity().getText(R.string.custom_color));
+			mColorTitle.setText(mColor.getName());
 		}
 		
 		@Override
@@ -144,19 +178,17 @@ public class DetailFragment extends Fragment {
 			switch (seekBar.getId()) {
 			case R.id.color_editor_red:
 				mColor.setR(progress);
-				setColorSwatch(mColor.getARGB());
 				break;
 			case R.id.color_editor_green:
 				mColor.setG(progress);
-				setColorSwatch(mColor.getARGB());
 				break;
 			case R.id.color_editor_blue:
 				mColor.setB(progress);
-				setColorSwatch(mColor.getARGB());
 				break;
 			default:
 				break;
 			}
+			setColorSwatch(mColor.getARGB());
 		}
 	};
 	
@@ -191,7 +223,9 @@ public class DetailFragment extends Fragment {
 			if (colorSample != null) {
 				setColorDetail(colorSample);
 			} else {
-				setColorDetail(color);
+				colorSample = new ColorSample(color.toBundle());
+				colorSample.setSource(getActivity().getString(R.string.color_editor));
+				setColorDetail(colorSample);
 			}
 		}
 	};

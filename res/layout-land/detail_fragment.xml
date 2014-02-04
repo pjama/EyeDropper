@@ -57,6 +57,36 @@
 		        android:layout_margin="10dip"
 		        android:background="#F00"/>
 	        
+	        <LinearLayout
+	            android:layout_gravity="top|left"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_marginLeft="110dip"
+	            android:layout_marginTop="15dip"
+	            android:padding="5dip"
+	            android:orientation="vertical" >
+	            
+	            <TextView
+	                android:id="@+id/color_detail_date"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:padding="5dip"
+	                android:textColor="@color/color_detail_light_text"
+	                android:textSize="@dimen/small_text_size"
+	                android:text="@string/date_captured" />
+	            
+	            <TextView
+	                android:id="@+id/color_detail_source"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:padding="5dip"
+	                android:maxLines="5"
+	                android:textColor="@color/color_detail_light_text"
+	                android:textSize="@dimen/small_text_size"
+	                android:text="@string/source" />
+	            
+	        </LinearLayout>
+	        
 	    </FrameLayout>
 	    
 	    <!-- Color Details -->

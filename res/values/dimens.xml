@@ -23,6 +23,7 @@
 	<dimen name="color_editor_seeker_padding">8dip</dimen>
 	<dimen name="color_editor_seeker_labal_padding">10dip</dimen>
 	<dimen name="title_text_size">20sp</dimen>
+	<dimen name="small_text_size">15sp</dimen>
 	<dimen name="nav_home_icon_size">96dip</dimen>
 	<dimen name="nav_home_icon_padding">10dip</dimen>
     <integer name="num_cols">1</integer>

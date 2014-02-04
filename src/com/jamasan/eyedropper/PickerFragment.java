@@ -1,6 +1,11 @@
 package com.jamasan.eyedropper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
@@ -61,7 +66,7 @@ public class PickerFragment extends Fragment {
 			} else if (args.containsKey("image_capture_uri")) {
 				URI javaUri = (URI)args.get("image_capture_uri");
 				Uri androidUri = Uri.parse(javaUri.toString());
-				grabImage(androidUri);
+				loadImageFromMedia(androidUri);
 			}
 		}
 		if (mColor != null) {
@@ -79,24 +84,75 @@ public class PickerFragment extends Fragment {
 	}
 	
 	public void showImageURI(Uri uri) {
-		String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-        ContentResolver resolver = getActivity().getContentResolver();
-        Cursor cursor;
-        cursor = resolver.query(uri, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String filePath = cursor.getString(columnIndex);
-        cursor.close();
-        
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+		File file = getImage(uri);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         mImageMain.setImageBitmap(getScaledBitmap(bitmap));
         mAttacher.update();
         mHUD.reset();
 	}
 	
-    public void grabImage(Uri uri) {
+	// http://stackoverflow.com/questions/11764392
+	private File getImage(Uri imageUri) {
+        File result = null;
+        final String[] cursorColumns = { MediaStore.Images.Media.DATA };
+        // some devices (OS versions return an URI of com.android instead of com.google.android
+        if (imageUri.toString().startsWith("content://com.android.gallery3d.provider"))  {
+            // use the com.google provider, not the com.android provider.
+            imageUri = Uri.parse(imageUri.toString().replace("com.android.gallery3d","com.google.android.gallery3d"));
+        }
+
+        Cursor cursor = getActivity().getContentResolver().query(imageUri, cursorColumns, null, null, null);
+        if (cursor != null) {
+            int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            cursor.moveToFirst();
+            // if it is a picasa image on newer devices with OS 3.0 and up
+            if (imageUri.toString().startsWith("content://com.google.android.gallery3d")) {
+                result = downloadImage(imageUri);                       
+            } else { // it is a regular local image file
+                result = new File(cursor.getString(dataColumnIndex));
+            }
+            cursor.close();
+
+        } else {
+            result = downloadImage(imageUri);
+        }
+        return result;          
+	}
+	
+	private File downloadImage(Uri imageUri) {
+	    File cacheDir;
+	    // if the device has an SD card
+	    if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
+	        cacheDir = new File(android.os.Environment.getExternalStorageDirectory(),".OCFL311");
+	    } else {
+	        // it does not have an SD card
+	        cacheDir = getActivity().getCacheDir();
+	    }
+
+	    if(!cacheDir.exists()) cacheDir.mkdirs();
+	    File f = new File(cacheDir, "downloaded_img");
+
+	    try {
+
+	        InputStream is = null;
+	        if (imageUri.toString().startsWith("content://com.google.android.gallery3d")) {
+	            is = getActivity().getContentResolver().openInputStream(imageUri);
+	        } else {
+	            is = new URL(imageUri.toString()).openStream();
+	        }
+
+	        OutputStream  os = new FileOutputStream(f);
+	        Utils.InputToOutputStream(is, os);
+
+	        return f;
+	    } catch (Exception ex) {
+	        Log.d(this.getClass().getName(), "Exception: " + ex.getMessage());
+	        ex.printStackTrace();
+	        return null;
+	    }
+	}
+	
+    public void loadImageFromMedia(Uri uri) {
     	Activity activity = getActivity();
         ContentResolver cr = activity.getContentResolver();
         cr.notifyChange(uri, null);

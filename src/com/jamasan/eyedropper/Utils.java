@@ -1,5 +1,9 @@
 package com.jamasan.eyedropper;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
@@ -9,6 +13,8 @@ import android.net.NetworkInfo;
 import android.util.TypedValue;
 
 public class Utils {
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+	
 	public static boolean isFullVersion(Context context) {
 		return context.getApplicationContext()
 				.getResources()
@@ -41,4 +47,15 @@ public class Utils {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 				pixels, r.getDisplayMetrics());
 	}
+	
+	public static int InputToOutputStream(InputStream input, OutputStream output) throws IOException{
+	     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+	     int count = 0;
+	     int n = 0;
+	     while (-1 != (n = input.read(buffer))) {
+	         output.write(buffer, 0, n);
+	         count += n;
+	     }
+	     return count;
+	 }
 }

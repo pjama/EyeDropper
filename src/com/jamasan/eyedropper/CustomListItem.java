@@ -21,7 +21,7 @@ public class CustomListItem {
 		return this.mIconSize;
 	}
 	
-	public int getColorId() {
+	public long getColorId() {
 		if(mColor instanceof ColorSample) {
 			return ((ColorSample)mColor).getId();
 		} else {

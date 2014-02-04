@@ -9,8 +9,7 @@ import java.util.Locale;
 import android.os.Bundle;
 
 public class ColorSample extends ColorPoint {
-
-	private int mId;
+	private long mId;
 	private Date mDateCaptured;
 	private String mSource;
 	
@@ -22,6 +21,11 @@ public class ColorSample extends ColorPoint {
 		super(args.getInt("color_argb"));
 		this.setName(args.getString("name"));
 		
+		if (args.containsKey("color_id")) {
+			setId(args.getLong("color_id"));
+		} else {
+			setId(-1);
+		}
 		String strDate = args.getString("date_captured");
 		Date date;
 		if (strDate == null) {
@@ -40,11 +44,11 @@ public class ColorSample extends ColorPoint {
 		this.mSource = args.getString("source");
 	}
 	
-	public int getId() {
+	public long getId() {
 		return mId;
 	}
 	
-	public ColorSample setId(int id) {
+	public ColorSample setId(long id) {
 		mId = id;
 		return this;
 	}
@@ -71,5 +75,11 @@ public class ColorSample extends ColorPoint {
 	public ColorSample setSource(String source) {
 		this.mSource = source;
 		return this;
+	}
+	
+	public Bundle toBundle() {
+		Bundle bundle = super.toBundle();
+		bundle.putLong("color_id", this.getId());
+		return bundle;
 	}
 }

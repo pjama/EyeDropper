@@ -6,11 +6,10 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,7 +34,6 @@ public class FavoritesFragment extends Fragment {
 		mAdapter = new FavoriteListAdapter(getActivity(), R.layout.row_favorite, mListRowItems, onClickDelete);
 		mListFavorites.setAdapter(mAdapter);
 		mListFavorites.setOnItemClickListener(onItemClickListener);
-		//mListFavorites.setOnItemLongClickListener(onItemLongClickListener);
 		listFavorites();
 	}
 	
@@ -59,7 +57,7 @@ public class FavoritesFragment extends Fragment {
 		}
 	}
 	
-	private void deleteFavorite(int colorId) {
+	private void deleteFavorite(long colorId) {
 		mSQL.deleteColor(colorId);
 	}
 	
@@ -68,10 +66,11 @@ public class FavoritesFragment extends Fragment {
 		public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
 			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();
 			CustomListItem item = adapter.getItem(pos);
-			ColorPoint color = item.getColor();
+			ColorSample color = (ColorSample)item.getColor();
 			
 			DetailFragment fragment = new DetailFragment();
-			fragment.setArguments(color.toBundle());
+			Bundle args = color.toBundle();
+			fragment.setArguments(args);
 			
 			((FullscreenActivity)getActivity()).setActiveFragment(fragment);
 		}
@@ -80,20 +79,9 @@ public class FavoritesFragment extends Fragment {
 	OnClickListener onClickDelete = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			Integer favoriteId = (Integer)v.getTag();
+			Long favoriteId = (Long)v.getTag();
 			deleteFavorite(favoriteId);
 			listFavorites();
-		}
-	};
-	
-	OnItemLongClickListener onItemLongClickListener = new OnItemLongClickListener() {
-		public boolean onItemLongClick(AdapterView<?> parent, View v, int pos, long id) {
-			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();
-			CustomListItem item = adapter.getItem(pos);
-			int colorId = item.getColorId();
-			deleteFavorite(colorId);
-			listFavorites();
-			return true;
 		}
 	};
 }

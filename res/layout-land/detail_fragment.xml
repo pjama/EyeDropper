@@ -31,6 +31,17 @@
 	            android:textColor="#FFF"
 	            android:padding="5dip"
 	            android:layout_marginLeft="20dip" />
+		    
+		    
+	        <ImageView
+	            android:id="@+id/color_detail_favorite"
+	            android:layout_width="32dip"
+	            android:layout_height="32dip"
+	            android:layout_gravity="right|center_vertical"
+	            android:layout_marginRight="10dip"
+	            android:scaleType="fitXY"
+	            android:background="@drawable/star_off"
+	            android:clickable="true" />
 	    
 	    </FrameLayout>
 	    
@@ -45,14 +56,6 @@
 		        android:layout_height="100dip"
 		        android:layout_margin="10dip"
 		        android:background="#F00"/>
-	        
-	        <ImageView
-	            android:id="@+id/color_detail_favorite"
-	            android:layout_width="32dip"
-	            android:layout_height="32dip"
-	            android:layout_gravity="right|bottom"
-	            android:src="@drawable/heart_add"
-	            android:clickable="true" />
 	        
 	    </FrameLayout>
 	    

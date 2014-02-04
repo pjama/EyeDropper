@@ -22,7 +22,7 @@ public class SQLiteManager {
 	private SQLiteDatabase mDb;
 	private OpenHelper mOpenHelper;
 	
-	public static final String DATABASE_NAME = "sqliteWordTwist.db"; //TODO Change db name
+	public static final String DATABASE_NAME = "eyedropper.db"; //TODO Change db name
 	public static final int DATABASE_VERSION = 2;
 	
 	private static final String TABLE_COLORS = "tbl_colors";
@@ -61,7 +61,7 @@ public class SQLiteManager {
 		mDb = mOpenHelper.getWritableDatabase();
 	}
 	
-	public long saveColor(ColorPoint color) {
+	public long saveColor(ColorSample color) {
 		
 		if(color == null) return -1;
 		reset();
@@ -76,11 +76,11 @@ public class SQLiteManager {
 	}
 	
 	public ArrayList<ColorSample> getColors() {
-		return getColors(null, null, null);
+		return getColors(null, null, null, null);
 	}
 	
 	
-	public ArrayList<ColorSample> getColors(String having, String selection, String groupby) {
+	public ArrayList<ColorSample> getColors(String having, String selection, String[] selectionArgs, String groupBy) {
 		ArrayList<ColorSample> colors = new ArrayList<ColorSample>();
 		mDb.beginTransaction();
 		Cursor cur = null;
@@ -88,20 +88,14 @@ public class SQLiteManager {
 									  COL_COLOR_NAME, COL_COLOR_DATE_CREATED,
 									  COL_COLOR_SOURCE};
 		try {
-			String orderby = COL_COLOR_DATE_CREATED + " DESC";
-			cur = mDb.query(
-					TABLE_COLORS,
-					cols,
-					selection,
-					null,
-					groupby,
-					having,
-					orderby);
+			String orderBy = COL_COLOR_DATE_CREATED + " DESC";
+			cur = mDb.query(TABLE_COLORS, cols,	selection, null,
+							groupBy, having, orderBy);
 			
 			cur.moveToPosition(0);
 			cur.moveToFirst();
 			
-			int id = -1;
+			long id = -1;
 			int argb = -1;
 			String name = "";
 			Date dateCreated = null;
@@ -111,7 +105,7 @@ public class SQLiteManager {
 				SimpleDateFormat formatter;
 				formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 				
-				id = cur.getInt(0);
+				id = cur.getLong(0);
 				argb = cur.getInt(1);
 				name = cur.getString(2);
 				dateCreated = (Date)formatter.parse(cur.getString(3));
@@ -136,21 +130,30 @@ public class SQLiteManager {
 			if(cur != null)
 				cur.close();
 		}
-		
 		return colors;
 	}
 	
-	public boolean isColorSaved(int argb) {
-		String whereClause = COL_COLOR_ARGB + "=?";
-		
+	public ColorSample isColorSaved(int argb) {
+		ColorSample result = null;
+		String selection = COL_COLOR_ARGB + "=?";
+		String[] selectionArgs = { String.valueOf(argb) };
+		ArrayList<ColorSample> colors = 
+				getColors(null, selection, selectionArgs, null);
+		if (colors != null && colors.size() > 0) { 
+			result = colors.get(0);
+		}
+		return result;
+	}
+	
+	public boolean isColorIdSaved(long colorId) {
+		String whereClause = COL_COLOR_ID + "=?";
 		Cursor cur = mDb.query(TABLE_COLORS,
-						 new String[] {"COUNT(" + COL_COLOR_ID + ")"},
+						 new String[] { "COUNT(" + COL_COLOR_ID + ")" },
 						 whereClause,
-						 new String[] {String.valueOf(argb)},
-						 COL_COLOR_ARGB,
+						 new String[] { String.valueOf(colorId) },
+						 COL_COLOR_ID,
 						 null,
 						 null);
-		
 		boolean result = cur.moveToFirst();
 		if (result) {
 			int rowCount = cur.getInt(0);
@@ -160,9 +163,9 @@ public class SQLiteManager {
 		}
 	}
 	
-	public int deleteColor(int colorId) {
+	public int deleteColor(long colorId) {
 		String whereClause = COL_COLOR_ID + "=?";
-		String[] whereArgs = {String.valueOf(colorId)};
+		String[] whereArgs = { String.valueOf(colorId) };
 		return mDb.delete(TABLE_COLORS, whereClause, whereArgs);
 	}
 	
@@ -170,8 +173,7 @@ public class SQLiteManager {
 		mDb.execSQL(DROP_TABLE_COLORS);
 	}
 	
-	public static List<String> GetColumns(SQLiteDatabase db, String tableName) {
-	    
+	public static List<String> GetColumns(SQLiteDatabase db, String tableName) {   
 		List<String> ar = null;
 	    Cursor c = null;
 	    try {

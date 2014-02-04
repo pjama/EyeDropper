@@ -77,25 +77,38 @@ public class DetailFragment extends Fragment {
 	}
 	
 	private void setColorDetail(ColorPoint color) {
-		mColor = new ColorSample(color.toBundle());
+		if (color instanceof ColorSample) {
+			mColor = (ColorSample)color;
+		} else {
+			mColor = new ColorSample(color.toBundle());
+		}
 		mColorTitle.setText(mColor.getName());
 		setColorSwatch(mColor.getARGB());
 		
-		mSeekBarRed.setProgress(color.getR());
-		mSeekBarGreen.setProgress(color.getG());
-		mSeekBarBlue.setProgress(color.getB());
+		mSeekBarRed.setProgress(mColor.getR());
+		mSeekBarGreen.setProgress(mColor.getG());
+		mSeekBarBlue.setProgress(mColor.getB());
 		
 		setFavoriteIcon();
 		updateRelatedColours();		
 	}
 	
 	private void setFavoriteIcon() {
-		boolean isFavorite = mSQL.isColorSaved(mColor.getARGB());
-		if(isFavorite) {
-			mSaveFavorite.setVisibility(View.INVISIBLE);
+		if(isFavorite(mColor)) {
+			mSaveFavorite.setBackgroundResource(R.drawable.star_on);
 		} else {
-			mSaveFavorite.setVisibility(View.VISIBLE);
+			mSaveFavorite.setBackgroundResource(R.drawable.star_off);
 		}
+	}
+	
+	private boolean isFavorite(ColorSample color) {
+		Long colorId = color.getId();
+		return colorId >= 0;
+	}
+	
+	private ColorSample findFavorite(int argb) {
+		ColorSample colorSample = mSQL.isColorSaved(argb);
+		return colorSample;
 	}
 	
 	private void setColorSwatch(int color) {
@@ -152,7 +165,15 @@ public class DetailFragment extends Fragment {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.color_detail_favorite:
-				mSQL.saveColor(mColor);
+				long colorId = mColor.getId();
+				if (colorId > -1 && mSQL.isColorIdSaved(colorId)) {
+					mSQL.deleteColor(colorId);
+					mColor.setId(-1);
+				} else {
+					long id = mSQL.saveColor(mColor);
+					mColor.setId(id);
+				}
+				setFavoriteIcon();
 				break;
 			default:
 				break;
@@ -166,7 +187,12 @@ public class DetailFragment extends Fragment {
 			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();
 			CustomListItem item = adapter.getItem(pos);
 			ColorPoint color = item.getColor();
-			setColorDetail(color);
+			ColorSample colorSample = findFavorite(color.getARGB());
+			if (colorSample != null) {
+				setColorDetail(colorSample);
+			} else {
+				setColorDetail(color);
+			}
 		}
 	};
 }

@@ -44,10 +44,8 @@ public class DetailFragment extends Fragment {
 		} else {
 			mColor = new ColorSample(0);
 		}
-		
 		mRAL = new ColorRAL(getActivity());
 		mPantone = new ColorPantone(getActivity());
-		
 		mSQL = new SQLiteManager(getActivity());
 		
 		return inflater.inflate(R.layout.detail_fragment, container, false);
@@ -79,15 +77,16 @@ public class DetailFragment extends Fragment {
 	}
 	
 	private void setColorDetail(ColorPoint color) {
-		mColorTitle.setText(color.getName());
-		this.setColorSwatch(color.getARGB());
-
+		mColor = new ColorSample(color.toBundle());
+		mColorTitle.setText(mColor.getName());
+		setColorSwatch(mColor.getARGB());
+		
 		mSeekBarRed.setProgress(color.getR());
 		mSeekBarGreen.setProgress(color.getG());
 		mSeekBarBlue.setProgress(color.getB());
 		
-		this.setFavoriteIcon();
-		this.updateRelatedColours();		
+		setFavoriteIcon();
+		updateRelatedColours();		
 	}
 	
 	private void setFavoriteIcon() {
@@ -116,11 +115,15 @@ public class DetailFragment extends Fragment {
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
 			updateRelatedColours();
+			setFavoriteIcon();
 		}
 		
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			mColorTitle.setText(getActivity().getText(R.string.custom_color));
+			String name;
+			name = String.valueOf(getActivity().getText(R.string.custom_color));
+			mColor.setName(name);
+			mColorTitle.setText(name);
 		}
 		
 		@Override
@@ -145,23 +148,19 @@ public class DetailFragment extends Fragment {
 	};
 	
 	OnClickListener onClickListener = new OnClickListener() {
-		
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.color_detail_favorite:
 				mSQL.saveColor(mColor);
 				break;
-
 			default:
 				break;
-			}
-			
+			}	
 		}
 	};
 	
 	OnItemClickListener onClickRelatedColor = new OnItemClickListener() {
-
 		@Override
 		public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
 			CustomAdapter adapter = (CustomAdapter)parent.getAdapter();

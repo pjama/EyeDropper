@@ -47,7 +47,7 @@ public class CustomAdapter extends ArrayAdapter<CustomListItem> {
     			tImage.setBackgroundColor(item.getColor().getARGB());
         	}
         	if (tTitle != null) {
-        		tTitle.setText(item.getTitle());
+        		tTitle.setText(item.getName());
         	}
         	if(tDescription != null){
         		tDescription.setText(item.getDescription());

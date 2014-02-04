@@ -29,7 +29,7 @@ public class CustomListItem {
 		}
 	}
 	
-	public String getTitle() {
+	public String getName() {
 		return mColor.getName();
 	}
 	

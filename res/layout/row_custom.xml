@@ -9,8 +9,8 @@
 	<ImageView
 		android:id="@+id/row_image"
 		android:contentDescription="@string/descrip_row_swatch"
-		android:layout_width="64dip"
-		android:layout_height="64dip" 
+		android:layout_width="65dip"
+		android:layout_height="55dip" 
 		android:gravity="center"
 		android:padding="1dip" />
 		

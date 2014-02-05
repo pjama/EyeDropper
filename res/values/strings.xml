@@ -3,12 +3,14 @@
 
     <string name="app_name">EyeDropper</string>
 	<string name="image_main_description">Main image container</string>
-	<string name="color_sample_desc">Color swatch display</string>
+	<string name="color_sample_desc">Colour swatch display</string>
 	<string name="menu_gallery">Gallery</string>
 	<string name="menu_camera">Camera</string>
 	<string name="menu_spectrum">Spectrum</string>
 	<string name="menu_favorites">Favourites</string>
-	<string name="menu_color_editor">Color Editor</string>
+	<string name="menu_color_editor">Colour Editor</string>
+	<string name="color_sample">Colour Sample</string>
+	<string name="related_palettes">Related Palettes</string>
 	<string name="readout_red">R:</string>
 	<string name="readout_green">G:</string>
 	<string name="readout_blue">B:</string>

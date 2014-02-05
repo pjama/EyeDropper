@@ -1,62 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/eyedropper_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+	android:layout_gravity="top|left"
     android:background="#000" >
 
-    <FrameLayout
-		android:id="@+id/eyedropper_main"
-        android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="top|left" >
-    
-            <ImageView 
-		        android:id="@+id/image_main"
-		        android:src="@drawable/spectrum_circular"
-		        android:contentDescription="@string/image_main_description"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-		        android:layout_gravity="right"
-		        android:layout_marginLeft="220dip"/>
-			
-		    <LinearLayout 
-				android:id="@+id/linear_color_sample"
-				android:layout_width="220dip"
-				android:layout_height="match_parent"
-				android:orientation="vertical"
-				android:layout_gravity="left"
-				android:gravity="left"
-				android:background="#000000">
-                
-		        <FrameLayout 
-		            android:background="#333"
-		            android:layout_width="match_parent"
-		            android:layout_height="50dp" >
-		        	
-		        	<ImageView
-		        	    android:id="@+id/picker_nav_drawer_icon"
-		        	    android:layout_width="25dp"
-		        	    android:layout_height="25dp"
-		        	    android:background="@drawable/ic_navigation_drawer"
-		        	    android:layout_gravity="left|center_vertical"
-		        	    android:clickable="true" />
-		        	
-		        </FrameLayout>
-		        
-		        <ListView
-		            android:id="@+id/list_colors"
-		            android:layout_width="match_parent"
-		            android:layout_height="match_parent"
-		            android:paddingLeft="10dip" />
-				
-            </LinearLayout>
-			
-        </FrameLayout>
+	<ImageView 
+		android:id="@+id/image_main"
+		android:src="@drawable/spectrum_circular"
+		android:contentDescription="@string/image_main_description"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_gravity="right"
+		android:layout_marginLeft="230dip"/>
 
-    <FrameLayout 
-        android:id="@+id/frame_color_detail"
-    	android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-    	android:padding="10dip" />
-    
+	<LinearLayout 
+		android:id="@+id/linear_color_sample"
+		android:layout_width="230dip"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:layout_gravity="left"
+		android:background="#000000"
+		android:gravity="left">
+
+		<!-- Header Bar -->
+		<FrameLayout
+			android:background="@color/color_detail_dark_gray_bg"
+			android:layout_width="match_parent"
+			android:layout_height="45dp"
+			android:clickable="true" >
+
+			<ImageView
+				android:id="@+id/picker_nav_drawer_icon"
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:background="@drawable/ic_navigation_drawer"
+				android:layout_gravity="left|center_vertical"
+				android:clickable="true" />
+			
+			<TextView 
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="left|center_vertical"
+			    android:layout_marginLeft="20dip"
+			    android:text="@string/color_sample"
+			    android:textSize="@dimen/text_size_title"
+			    android:textColor="@color/color_detail_light_text" />
+			
+		</FrameLayout>
+		
+		<FrameLayout
+		    android:id="@+id/color_picker_frame"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+			android:background="@drawable/list_selector" >
+		    
+		    <ImageView
+		        android:id="@+id/picker_color_swatch"
+		        android:layout_width="85dip"
+		        android:layout_height="75dip"
+		        android:layout_gravity="left|center_vertical"
+		        android:layout_margin="5dip" />
+		    
+		    <LinearLayout
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="top|left"
+		        android:layout_marginLeft="90dip"
+		        android:orientation="vertical" >
+			    
+			    <TextView
+			        android:id="@+id/picker_color_title"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_margin="3dip"
+			        android:textSize="@dimen/text_size_subtitle"
+			        android:textColor="@color/color_detail_light_text"
+			        android:textStyle="bold" />
+			    
+			    <TextView
+			        android:id="@+id/picker_color_description"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_margin="3dip"
+			        android:textSize="@dimen/text_size_small"
+			        android:textColor="@color/color_detail_light_text"
+			        android:textStyle="normal" />
+		    
+		    </LinearLayout>
+		    
+		</FrameLayout>
+		
+		<!-- Related Colors Bar -->
+		<FrameLayout
+			android:background="@color/color_detail_dark_gray_bg"
+			android:layout_width="match_parent"
+			android:layout_height="36dp" >
+			
+			<TextView
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="left|center_vertical"
+			    android:layout_marginLeft="12dip"
+			    android:text="@string/related_palettes"
+			    android:textSize="@dimen/text_size_subtitle"
+			    android:textColor="@color/color_detail_light_text" />
+			
+		</FrameLayout>
+		
+		<ListView
+			android:id="@+id/list_colors"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="5dip"
+			android:listSelector="@drawable/list_selector" />
+		
+	</LinearLayout>
+		
 </FrameLayout>

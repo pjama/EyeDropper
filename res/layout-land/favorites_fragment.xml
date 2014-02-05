@@ -37,7 +37,8 @@
 	       android:id="@+id/favorites_list"
 	       android:layout_height="match_parent"
 	       android:layout_width="match_parent"
-	       android:padding="5dip" />
+	       android:padding="5dip"
+	       android:listSelector="@drawable/list_selector" />
 	       
     </LinearLayout>
     
@@ -48,6 +49,6 @@
         android:layout_gravity="center"
         android:text="@string/no_favorites"
         android:textColor="@color/color_detail_light_text"
-        android:textSize="@dimen/title_text_size" />
+        android:textSize="@dimen/text_size_title" />
     
 </FrameLayout>

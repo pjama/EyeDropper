@@ -72,7 +72,7 @@
 	                android:layout_height="wrap_content"
 	                android:padding="5dip"
 	                android:textColor="@color/color_detail_light_text"
-	                android:textSize="@dimen/small_text_size"
+	                android:textSize="@dimen/text_size_small"
 	                android:text="@string/date_captured" />
 	            
 	            <TextView
@@ -82,7 +82,7 @@
 	                android:padding="5dip"
 	                android:maxLines="5"
 	                android:textColor="@color/color_detail_light_text"
-	                android:textSize="@dimen/small_text_size"
+	                android:textSize="@dimen/text_size_small"
 	                android:text="@string/source" />
 	            
 	        </LinearLayout>
@@ -192,14 +192,15 @@
 		    android:layout_height="wrap_content"
 		    android:padding="8dip"
 		    android:background="@color/color_detail_dark_gray_bg"
-		    android:text="Related Colours"
+		    android:text="@string/related_palettes"
 		    android:textColor="@color/color_detail_light_text"
 		    android:textSize="20sp" />
         
     	<ListView
     	    android:id="@+id/list_related_colors"
 	        android:layout_width="match_parent"
-	        android:layout_height="match_parent" />
+	        android:layout_height="match_parent"
+			android:listSelector="@drawable/list_selector" />
 	    
     </LinearLayout>
   	

@@ -6,4 +6,7 @@
 	<color name="color_detail_dark_gray_bg">#2F2F2F</color>
 	<color name="color_detail_light_text">#CFCFCF</color>
 	
+	<color name="list_selector_pressed">#3F3F3F</color>
+	<color name="list_selector_transparent">#FF000000</color>
+	
 </resources>

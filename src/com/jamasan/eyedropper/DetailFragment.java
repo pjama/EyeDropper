@@ -80,6 +80,8 @@ public class DetailFragment extends Fragment {
 		mRelatedColors.setAdapter(mCustomAdapter);
 		mRelatedColors.setOnItemClickListener(onClickRelatedColor);
 		
+		ImageView sliderNav = (ImageView)getActivity().findViewById(R.id.color_detail_drawer_nav_icon);
+		sliderNav.setOnClickListener(onClickListener);
 		setColorDetail(mColor);
 	}
 	
@@ -206,6 +208,9 @@ public class DetailFragment extends Fragment {
 					mColor.setId(id);
 				}
 				setFavoriteIcon();
+				break;
+			case R.id.color_detail_drawer_nav_icon:
+				((FullscreenActivity)getActivity()).showDrawerMenu(true);
 				break;
 			default:
 				break;

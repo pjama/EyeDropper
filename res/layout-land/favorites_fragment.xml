@@ -16,6 +16,7 @@
             android:background="@color/color_detail_dark_gray_bg" >
 	    	
         	<ImageView
+        	    android:id="@+id/favorites_drawer_icon"
 	       	    android:layout_width="25dp"
 	       	    android:layout_height="25dp"
 	       	    android:layout_gravity="center_vertical"

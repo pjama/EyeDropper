@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,6 +35,8 @@ public class FavoritesFragment extends Fragment {
 		mAdapter = new FavoriteListAdapter(getActivity(), R.layout.row_favorite, mListRowItems, onClickDelete);
 		mListFavorites.setAdapter(mAdapter);
 		mListFavorites.setOnItemClickListener(onItemClickListener);
+		ImageView sliderNav = ((ImageView)getActivity().findViewById(R.id.favorites_drawer_icon));
+		sliderNav.setOnClickListener(onClickListener);
 		listFavorites();
 	}
 	
@@ -60,6 +63,18 @@ public class FavoritesFragment extends Fragment {
 	private void deleteFavorite(long colorId) {
 		mSQL.deleteColor(colorId);
 	}
+	
+	OnClickListener onClickListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.favorites_drawer_icon:
+				((FullscreenActivity)getActivity()).showDrawerMenu(true);
+				break;
+			}
+		}
+	};
 	
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
